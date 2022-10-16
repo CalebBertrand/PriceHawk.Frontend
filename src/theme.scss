@@ -1,0 +1,20 @@
+#app {
+  &.light-theme {
+    --primary-color: #f3cb2b;
+    --bg-color: #fdf6e3;
+    --bg-secondary-color: #343233;
+    --danger-color: #fe5448;
+    --confirm-color: #62a87c;
+  }
+
+  color: var(--bg-secondary-color);
+  background-color: var(--bg-color);
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+
+  .danger {
+    background-color: var(--danger-color);
+  }
+  .confirm {
+    background-color: var(--confirm-color);
+  }
+}
