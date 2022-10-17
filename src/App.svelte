@@ -1,6 +1,6 @@
 <script>
-  import Hero from './lib/Hero.svelte';
-  import Search from './lib/Search.svelte';
+  import Hero from './sections/Hero.svelte';
+  import Search from './sections/Search.svelte';
 </script>
 
 <Hero></Hero>
