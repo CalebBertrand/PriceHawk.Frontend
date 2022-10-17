@@ -1,5 +1,7 @@
 <script>
-  import Counter from './lib/Counter.svelte'
+  import Hero from './lib/Hero.svelte';
+  import Search from './lib/Search.svelte';
 </script>
 
-<h1>Test</h1>
+<Hero></Hero>
+<Search></Search>
