@@ -1,7 +1,7 @@
 <script type="typescript">
   export let color: 'red' | 'white' | 'black';
   export let callBack: Function = null;
-  export let rounded = true;
+  export let applyClass = '';
 
   const colorClasses = {
     red: "bg-red-500 hover:bg-red-600 text-slate-200",
@@ -11,8 +11,7 @@
 </script>
 
 <button 
-  class="p-3 font-bold text-lg {colorClasses[color]}"
-  class:rounded={rounded}
+  class="p-3 font-bold text-lg {applyClass} {colorClasses[color]}"
   on:click={callBack && callBack()}>
   <slot></slot>
 </button>

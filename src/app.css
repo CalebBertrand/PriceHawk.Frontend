@@ -19,3 +19,7 @@ body, #app {
 section {
     padding: 3rem 8%;
 }
+
+textarea, input {
+    outline: none;
+}

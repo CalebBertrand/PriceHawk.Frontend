@@ -21,7 +21,7 @@
       left: 0;
       right: 0;
       height: 15vh;
-      background-image: linear-gradient(to bottom, transparent, black);
+      background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.75));
     }
   }
 </style>
@@ -34,7 +34,7 @@
       <p class="my-5">
         PriceHawk sends you email notifications when products at supported stores drop below your specified price.
       </p>
-      <Button color="red" callBack={scrollToStart}>Get Started</Button>
+      <Button color="red" applyClass="rounded" callBack={scrollToStart}>Get Started</Button>
     </div>
   </div>
   <div class="md:w-1/2 py-8">
