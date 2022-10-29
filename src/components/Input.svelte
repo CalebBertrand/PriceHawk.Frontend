@@ -1,39 +1,45 @@
-<script>
+<script type="typescript">
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
 
-  export let type;
-  export let placeholder;
+  export let type = 'text';
+  export let placeholder: string | number = '';
   export let options = [];
-  export let initialValue;
-  export let applyClass = '';
+  export let initialValue: string | number = '';
+  export let applyClass: string = '';
   export const dispatchValueChanged = createEventDispatcher();
 
-  let value = initialValue ?? (type === 'select' ? options[0] : placeholder);
+  let selected = options.includes(initialValue) 
+    ? initialValue 
+    : options.length > 0 
+    ? options[0] 
+    : null;
+  let expanded = false;
+
   function valueChanged(selectedValue) {
+    if (type === 'select') selected = selectedValue;
+
     dispatchValueChanged('valueChanged', {
       value: selectedValue
     });
-    value = selectedValue;
   }
-
-  let expanded = false;
 </script>
 
 {#if type !== 'select'}
   <input
     class="bg-slate-800 text-slate-200 text-lg md:text-2xl focus:border-red-500
             py-1 px-1 text-ellipsis shadow-lg w-full h-full {applyClass}"
-    placeholder={placeholder}
+    placeholder={`${placeholder}`}
     type={type}
     value={initialValue}
     min="0"
+    maxlength="100"
     on:input={e => valueChanged(e.currentTarget.value)}>
 {:else if type === 'select'}
   <div class="relative inline-block text-left h-full bg-slate-800 text-slate-200 {applyClass}">
     <button type="button" class="align-middle h-full px-2 text-lg"
      aria-expanded="true" aria-haspopup="true" on:click={() => expanded = !expanded}>
-      {value} 
+      {selected} 
       {#if options.length > 1}
         <i class="fa-solid fa-angle-down text-slate-600 transition-transform mx-1" 
           class:rotate-180={expanded}>
@@ -50,7 +56,7 @@
             on:click={() => valueChanged(option)}
             class="text-slate-200 block px-4 py-2 text-sm cursor-pointer transition-colors 
                   hover:bg-slate-700" 
-            role="option" aria-selected={value === option} tabindex="-1">
+            role="option" aria-selected={selected === option} tabindex="-1">
             {option}
           </a>
         {/each}

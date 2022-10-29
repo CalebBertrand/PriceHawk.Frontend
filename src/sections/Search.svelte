@@ -3,16 +3,17 @@
   import Button from '../components/Button.svelte';
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
-  import { clamp } from '../utils/clamp';
+  import { responses } from '../stores';
+  import { clamp } from 'lodash-es';
 
   const stages = [
     {
       header: "<em>What</em> Do You Want to Buy?",
       inputs: [
         {
+          name: 'queryString',
           type: 'text',
           placeholder: 'ROG Zephyrus Duo 3070Ti',
-          storedValue: '',
           main: true
         }
       ]
@@ -21,12 +22,13 @@
       header: "<em>For How Much</em> Would You Buy It?",
       inputs: [
         {
+          name: 'currency',
           type: 'select',
           options: ['$'],
-          storedValue: '$',
           main: false
         },
         {
+          name: 'priceWatch',
           type: 'number',
           placeholder: 1200,
           storedValue: '',
@@ -38,21 +40,32 @@
       header: "<em>When</em> Are You Planning To Buy?",
       inputs: [
         {
+          name: 'timeRange',
           type: 'number',
           placeholder: 14,
-          storedValue: '',
           main: true
         },
         {
+          name: 'timeUnit',
           type: 'select',
           options: ['days', 'weeks', 'months'],
-          storedValue: 'days',
           main: false
         }
       ]
     }
   ];
   let stageIndex = 0;
+
+  function next() {
+    if (stageIndex === 2) {
+      const start = document.getElementById('review');
+      start.scrollIntoView({
+        behavior: 'smooth'
+      });
+    } else {
+      stageIndex = clamp(stageIndex + 1, 0, 2);
+    }
+  };
 
   $: stage = stages[stageIndex];
 </script>
@@ -84,13 +97,13 @@
               applyClass={index === 0 ? 'rounded-l-lg pl-3' : ''}
               options={input?.options}
               placeholder={input?.placeholder}
-              initialValue={input.storedValue}
-              on:valueChanged={e => input.storedValue = e.detail.value}></Input>
+              initialValue={$responses[input.name]}
+              on:valueChanged={e => $responses[input.name] = e.detail.value}></Input>
           </div>
         {/each}
         <Button color="red"
-          applyClass="rounded-r-lg"
-          callBack={() => stageIndex = clamp(stageIndex + 1, 0, 2)}>
+          applyClass="rounded-r-lg text-xl px-5 py-4"
+          callBack={() => next()}>
           Next
         </Button>
       </div>
