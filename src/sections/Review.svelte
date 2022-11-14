@@ -1,10 +1,15 @@
 <script type='typescript'>
+  import Popup from "../components/Popup.svelte";
   import Button from "../components/Button.svelte";
   import Header from "../components/Header.svelte";
   import { responses } from '../stores';
 
-  function submit() {
+  let popupDisplayed = false;
+  function showPopup(): void {
+    popupDisplayed = true;
+  }
 
+  function submit() {
   }
 </script>
 
@@ -40,9 +45,14 @@
     <Button color="red" applyClass="rounded mt-3" callBack={submit}>Submit</Button>
   </div>
   <div class="md:w-1/4 py-8">
-    <h5 class="bg-black text-slate-300 float-right rounded p-3 cursor-pointer">
+    <h5 class="bg-black text-slate-300 float-right rounded p-3 cursor-pointer hover:bg-slate-600 transition-colors"
+      on:click={showPopup} on:keyup={showPopup}>
       <i class="fa fa-info-circle mr-1"></i>
       How Does It Work?
     </h5>
   </div>
+
+  <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
+    bind:displayed={popupDisplayed}>
+  </Popup>
 </section>
