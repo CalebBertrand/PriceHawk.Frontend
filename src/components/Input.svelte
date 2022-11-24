@@ -22,6 +22,8 @@
     dispatchValueChanged('valueChanged', {
       value: selectedValue
     });
+
+    expanded = false;
   }
 </script>
 
@@ -41,7 +43,7 @@
      aria-expanded="true" aria-haspopup="true" on:click={() => expanded = !expanded}>
       {selected} 
       {#if options.length > 1}
-        <i class="fa-solid fa-angle-down text-slate-600 transition-transform mx-1" 
+        <i class="fa-solid fa-angle-down text-slate-300 transition-transform mx-1" 
           class:rotate-180={expanded}>
         </i>
       {/if}
@@ -54,7 +56,7 @@
           <a
             href={null}
             on:click={() => valueChanged(option)}
-            class="text-slate-200 block px-4 py-2 text-sm cursor-pointer transition-colors 
+            class="text-slate-200 block px-4 py-2 text-lg cursor-pointer transition-colors 
                   hover:bg-slate-700" 
             role="option" aria-selected={selected === option} tabindex="-1">
             {option}

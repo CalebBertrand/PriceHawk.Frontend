@@ -31,7 +31,7 @@
     <div class="my-2">
       <h2 class="text-lg font-bold text-slate-300 mb-1">Desired Price: </h2>
       {#if $responses.priceWatch}
-        <span class="text-xl">{$responses.priceWatch} or less</span>
+        <span class="text-xl">${$responses.priceWatch} or less</span>
       {:else}
         <span class="text-xl">Not set.</span>
       {/if}
@@ -53,6 +53,8 @@
   </div>
 
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
+    text="Twice a day, PriceHawk will search for products on [insert supported stores here... still in development!] that match the parameters you set here. 
+    When a match is found, an email or text message is sent to notify you."
     bind:displayed={popupDisplayed}>
   </Popup>
 </section>
