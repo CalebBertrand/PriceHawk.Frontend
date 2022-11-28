@@ -4,7 +4,8 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
-  import { clamp } from 'lodash-es';
+  import { clamp, remove } from 'lodash-es';
+  import { MarketPlaces } from '../MarketPlaces';
 
   const stages = [
     {
@@ -52,20 +53,33 @@
           main: false
         }
       ]
+    },
+    {
+      header: "<em>Where</em> Would You Buy It?",
+      marketPlaceSelect: true,
+      storedValue: []
     }
   ];
   let stageIndex = 0;
 
   function next() {
-    if (stageIndex === 2) {
+    if (stageIndex === stages.length - 1) {
       const start = document.getElementById('review');
       start.scrollIntoView({
         behavior: 'smooth'
       });
     } else {
-      stageIndex = clamp(stageIndex + 1, 0, 2);
+      stageIndex = clamp(stageIndex + 1, 0, stages.length - 1);
     }
   };
+
+  function toggleMarketplace(marketplaceId) {
+    const selectedMarketplaces = stages[3].storedValue;
+    if (selectedMarketplaces.includes(marketplaceId))
+      remove(selectedMarketplaces, marketplaceId);
+    else
+      selectedMarketplaces.push(marketplaceId);
+  }
 
   $: stage = stages[stageIndex];
 </script>
@@ -90,23 +104,39 @@
   {#key stageIndex}
     <div class="text-center w-full" in:fly={{ y: -25, duration: 500 }}>
       <Header text={stage.header}></Header>
-      <div class="mt-3 mx-auto w-4/5 w-md-3/4 flex flex-row items-stretch justify-items-stretch">
-        {#each stage.inputs as input, index}
-          <div class:flex-grow={input.main}>
-            <Input type={input.type}
-              applyClass={index === 0 ? 'rounded-l-lg pl-3' : ''}
-              options={input?.options}
-              placeholder={input?.placeholder}
-              initialValue={$responses[input.name]}
-              on:valueChanged={e => $responses[input.name] = e.detail.value}></Input>
-          </div>
-        {/each}
-        <Button color="red"
-          applyClass="rounded-r-lg text-xl px-5 py-4"
-          callBack={() => next()}>
-          Next
-        </Button>
-      </div>
+      {#if !stage.marketPlaceSelect}
+        <div class="mt-3 mx-auto w-4/5 w-md-3/4 flex flex-row items-stretch justify-items-stretch">
+          {#each stage.inputs as input, index}
+            <div class:flex-grow={input.main}>
+              <Input type={input.type}
+                applyClass={index === 0 ? 'rounded-l-lg pl-3' : ''}
+                options={input?.options}
+                placeholder={input?.placeholder}
+                initialValue={$responses[input.name]}
+                on:valueChanged={e => $responses[input.name] = e.detail.value}>
+              </Input>
+            </div>
+          {/each}
+          <Button color="red"
+            applyClass="rounded-r-lg text-xl px-5 py-4"
+            callBack={() => next()}>
+            Next
+          </Button>
+        </div>
+      {:else}
+        <div class="mx-auto">
+          {#each MarketPlaces as marketplace}
+            <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center cursor-pointer
+              hover:scale-110 transition-transform duration-100 p-2 bg-black"
+              on:click={() => toggleMarketplace(marketplace.id)} on:keydown={() => toggleMarketplace(marketplace.id)}>
+              <div class="bg-contain bg-no-repeat bg-center w-full h-full"
+                alt={ marketplace.name + " logo" }
+                style={`background-image: url("${marketplace.imageUrl}");`}>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
     </div>
   {/key}
 </section>
