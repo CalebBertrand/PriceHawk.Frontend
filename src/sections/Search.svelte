@@ -4,8 +4,8 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
-  import { clamp, remove } from 'lodash-es';
-  import { MarketPlaces } from '../MarketPlaces';
+  import { clamp, isNil, remove, set } from 'lodash-es';
+  import MarketPlaces from '../marketplaces';
 
   const stages = [
     {
@@ -20,7 +20,7 @@
       ]
     },
     {
-      header: "<em>For How Much</em> Would You Buy It?",
+      header: "For <em>How Much</em> Would You Buy It?",
       inputs: [
         {
           name: 'currency',
@@ -55,12 +55,11 @@
       ]
     },
     {
-      header: "<em>Where</em> Would You Buy It?",
-      marketPlaceSelect: true,
-      storedValue: []
+      header: "<em>Where</em> Would You Buy It?"
     }
   ];
   let stageIndex = 0;
+  let selectedMarketplaces = [];
 
   function next() {
     if (stageIndex === stages.length - 1) {
@@ -73,15 +72,16 @@
     }
   };
 
-  function toggleMarketplace(marketplaceId) {
-    const selectedMarketplaces = stages[3].storedValue;
-    if (selectedMarketplaces.includes(marketplaceId))
-      remove(selectedMarketplaces, marketplaceId);
-    else
-      selectedMarketplaces.push(marketplaceId);
-  }
-
   $: stage = stages[stageIndex];
+
+  function toggleMarketplace(marketplaceId) {
+    if (selectedMarketplaces.includes(marketplaceId))
+      selectedMarketplaces = selectedMarketplaces.filter(id => id !== marketplaceId);
+    else
+      selectedMarketplaces = [...selectedMarketplaces, marketplaceId];
+
+    responses.set(set($responses, 'marketplaces', selectedMarketplaces));
+  }
 </script>
 <style>
   #search {
@@ -104,7 +104,7 @@
   {#key stageIndex}
     <div class="text-center w-full" in:fly={{ y: -25, duration: 500 }}>
       <Header text={stage.header}></Header>
-      {#if !stage.marketPlaceSelect}
+      {#if !isNil(stage.inputs)}
         <div class="mt-3 mx-auto w-4/5 w-md-3/4 flex flex-row items-stretch justify-items-stretch">
           {#each stage.inputs as input, index}
             <div class:flex-grow={input.main}>
@@ -126,9 +126,16 @@
       {:else}
         <div class="mx-auto">
           {#each MarketPlaces as marketplace}
+            {@const isSelected = selectedMarketplaces.includes(marketplace.id)}
             <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center cursor-pointer
-              hover:scale-110 transition-transform duration-100 p-2 bg-black"
+              hover:scale-110 transition-transform duration-100 p-2 bg-black hover:bg-slate-900 relative"
               on:click={() => toggleMarketplace(marketplace.id)} on:keydown={() => toggleMarketplace(marketplace.id)}>
+              <div class="absolute rounded border-solid border-red-500 border-2 w-5 h-5 right-2 top-2"
+                class:bg-red-500={isSelected}>
+                {#if isSelected}
+                  <i class="fa fa-check text-white absolute top-0 left-0"></i>
+                {/if}
+              </div>
               <div class="bg-contain bg-no-repeat bg-center w-full h-full"
                 alt={ marketplace.name + " logo" }
                 style={`background-image: url("${marketplace.imageUrl}");`}>

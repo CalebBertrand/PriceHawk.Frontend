@@ -1,14 +1,12 @@
 import { Writable, writable } from 'svelte/store';
 
-import type { MarketPlaces } from './Marketplaces.enum';
-
 export type Responses = {
     queryString: string | null;
     currency: '$';
     priceWatch: number | null;
     timeRange: number | null;
     timeUnit: 'days' | 'weeks' | 'months' | null;
-    marketplaces: Array<MarketPlaces>;
+    marketplaces: Array<number>;
 }
 
 export const responses: Writable<Responses> = writable({
