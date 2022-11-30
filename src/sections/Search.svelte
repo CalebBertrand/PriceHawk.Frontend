@@ -4,7 +4,7 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
-  import { clamp, isNil, remove, set } from 'lodash-es';
+  import { clamp, isNil, set } from 'lodash-es';
   import MarketPlaces from '../marketplaces';
 
   const stages = [
@@ -124,7 +124,7 @@
           </Button>
         </div>
       {:else}
-        <div class="mx-auto">
+        <div class="mx-auto pt-3">
           {#each MarketPlaces as marketplace}
             {@const isSelected = selectedMarketplaces.includes(marketplace.id)}
             <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center cursor-pointer
@@ -142,6 +142,10 @@
               </div>
             </div>
           {/each}
+          <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center text-white
+              p-2 pt-4 bg-black relative">
+            ...More coming soon!
+          </div>
         </div>
       {/if}
     </div>

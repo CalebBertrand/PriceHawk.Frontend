@@ -34,7 +34,7 @@
       <p class="my-5">
         PriceHawk sends you email notifications when products at supported stores drop below your specified price.
       </p>
-      <Button color="red" applyClass="rounded" callBack={scrollToStart}>Get Started</Button>
+      <Button color="red" applyClass="rounded" callBack={scrollToStart} size='lg'>Get Started</Button>
     </div>
   </div>
   <div class="md:w-1/2 py-8">
