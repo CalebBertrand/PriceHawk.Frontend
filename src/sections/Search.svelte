@@ -5,7 +5,7 @@
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
   import { clamp, isNil, set } from 'lodash-es';
-  import MarketPlaces from '../marketplaces';
+  import MarketPlaceList from '../components/MarketPlaceList.svelte';
 
   const stages = [
     {
@@ -59,7 +59,6 @@
     }
   ];
   let stageIndex = 0;
-  let selectedMarketplaces = [];
 
   function next() {
     if (stageIndex === stages.length - 1) {
@@ -72,16 +71,11 @@
     }
   };
 
-  $: stage = stages[stageIndex];
-
-  function toggleMarketplace(marketplaceId) {
-    if (selectedMarketplaces.includes(marketplaceId))
-      selectedMarketplaces = selectedMarketplaces.filter(id => id !== marketplaceId);
-    else
-      selectedMarketplaces = [...selectedMarketplaces, marketplaceId];
-
-    responses.set(set($responses, 'marketplaces', selectedMarketplaces));
+  function updateSelectedMarketplaces(change) {
+    responses.set(set($responses, 'marketplaces', change.detail.value))
   }
+
+  $: stage = stages[stageIndex];
 </script>
 <style>
   #search {
@@ -125,23 +119,7 @@
         </div>
       {:else}
         <div class="mx-auto pt-3">
-          {#each MarketPlaces as marketplace}
-            {@const isSelected = selectedMarketplaces.includes(marketplace.id)}
-            <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center cursor-pointer
-              hover:scale-110 transition-transform duration-100 p-2 bg-black hover:bg-slate-900 relative"
-              on:click={() => toggleMarketplace(marketplace.id)} on:keydown={() => toggleMarketplace(marketplace.id)}>
-              <div class="absolute rounded border-solid border-red-500 border-2 w-5 h-5 right-2 top-2"
-                class:bg-red-500={isSelected}>
-                {#if isSelected}
-                  <i class="fa fa-check text-white absolute top-0 left-0"></i>
-                {/if}
-              </div>
-              <div class="bg-contain bg-no-repeat bg-center w-full h-full"
-                alt={ marketplace.name + " logo" }
-                style={`background-image: url("${marketplace.imageUrl}");`}>
-              </div>
-            </div>
-          {/each}
+          <MarketPlaceList selectable floatDirection='left' on:valueChanged={e => updateSelectedMarketplaces(e)}></MarketPlaceList>
           <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center text-white
               p-2 pt-4 bg-black relative">
             ...More coming soon!

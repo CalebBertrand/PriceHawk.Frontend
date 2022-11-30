@@ -1,6 +1,7 @@
 <script type='typescript'>
   import Button from "../components/Button.svelte";
   import Header from "../components/Header.svelte";
+  import MarketPlaceList from "../components/MarketPlaceList.svelte";
 
   function scrollToStart() {
     const start = document.getElementById('search');
@@ -39,6 +40,9 @@
   </div>
   <div class="md:w-1/2 py-8">
     <h5 class="bg-black text-slate-300 float-right rounded p-3">Supported Stores:</h5>
+    <div class="pt-2 pl-5 clear-both">
+      <MarketPlaceList floatDirection='right'></MarketPlaceList>
+    </div>
   </div>
   <div class="shadow"></div>
   <div class="bg-black text-slate-300 absolute bottom-0 right-0 p-3">Image By Freepik</div>

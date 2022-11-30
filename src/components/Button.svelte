@@ -18,7 +18,7 @@
 </script>
 
 <button 
-  class="p-3 font-bold text-lg disabled:opacity-50 
+  class="p-3 font-bold text-lg disabled:bg-slate-500 
     {applyClass} {colorClasses[color]} {sizeClasses[size]}"
   on:click={callBack && callBack()} disabled={disabled}>
   <slot></slot>
