@@ -5,8 +5,8 @@
   const valuesChangedDispatcher = createEventDispatcher();
   export let selectable = false;
   export let floatDirection: 'left' | 'right';
+  export let selectedMarketplaces: number[] = [];
 
-  let selectedMarketplaces = [];
   function toggleMarketplace(marketplaceId) {
     if (selectedMarketplaces.includes(marketplaceId))
       selectedMarketplaces = selectedMarketplaces.filter(id => id !== marketplaceId);

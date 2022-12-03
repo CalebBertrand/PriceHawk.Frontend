@@ -119,7 +119,9 @@
         </div>
       {:else}
         <div class="mx-auto pt-3">
-          <MarketPlaceList selectable floatDirection='left' on:valueChanged={e => updateSelectedMarketplaces(e)}></MarketPlaceList>
+          <MarketPlaceList selectable floatDirection='left'
+            selectedMarketplaces={$responses.marketplaces}
+            on:valueChanged={e => updateSelectedMarketplaces(e)}></MarketPlaceList>
           <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center text-white
               p-2 pt-4 bg-black relative">
             ...More coming soon!
