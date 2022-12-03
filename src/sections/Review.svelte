@@ -7,16 +7,43 @@
   import { isNil } from "lodash-es";
   import { derived } from "svelte/store";
   import MarketPlaces from '../marketplaces';
+  import type { OutgoingWatch } from "../outgoing-watch";
+
+  const requestUrl = 'https://pricehawk.azurewebsites.net/api/requests?code=7fQONg1Z1LPrG72HkrtTnuHhaPb2splJYV7WSg4KdK8ZAzFuRvly0A==';
+  const timeUnitsToDays = {
+    days: 1,
+    weeks: 7,
+    months: 30
+  };
 
   let popupDisplayed = false;
   function showPopup(): void {
     popupDisplayed = true;
   }
 
+  let loading = false;
   function submit() {
     grecaptcha.ready(() => {
-      grecaptcha.execute('6LdsUEQjAAAAADj5LDQDij1v_z2Iw067p3uaZ68X', {action: 'submit'}).then((token) => {
-          
+      grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'}).then((token) => {
+        loading = true;
+
+        const { queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
+        const dayCount = timeRange * timeUnitsToDays[timeUnit];
+        fetch(requestUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: queryString,
+            price: priceWatch,
+            dayCount: dayCount,
+            captchaToken: token,
+            marketplaceIds: marketplaces
+          } as OutgoingWatch)
+        })
+      }).then(() => {
+        loading = false;
       });
     });
   }

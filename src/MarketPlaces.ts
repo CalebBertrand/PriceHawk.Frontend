@@ -1,6 +1,10 @@
+export enum MarketPlaceIds {
+    Steam = 1
+}
+
 const MarketPlaces = [
     {
-        id: 1,
+        id: MarketPlaceIds.Steam,
         name: 'Steam',
         imageUrl: 'src/assets/steam_logo_white_small.png'
     }
