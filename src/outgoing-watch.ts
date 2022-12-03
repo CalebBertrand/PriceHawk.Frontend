@@ -1,4 +1,4 @@
-import { MarketPlaceIds } from "./marketplaces";
+import { MarketPlaceIds } from "./marketplace-ids";
 
 export type OutgoingWatch = {
     query: string;

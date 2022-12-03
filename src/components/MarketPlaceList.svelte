@@ -1,6 +1,6 @@
 <script type="typescript">
   import { createEventDispatcher } from 'svelte';
-  import { MarketPlaces } from '../marketplaces';
+  import { MarketPlaceConfigs } from '../marketplace-configs';
 
   const valuesChangedDispatcher = createEventDispatcher();
   export let selectable = false;
@@ -19,7 +19,7 @@
   }
 </script>
 
-{#each MarketPlaces as marketplace}
+{#each MarketPlaceConfigs as marketplace}
   {@const isSelected = selectedMarketplaces.includes(marketplace.id)}
   <div class="float-{floatDirection} w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center
     p-2 bg-black relative {selectable ? 'hover:scale-110 transition-transform duration-100 hover:bg-slate-900 cursor-pointer' : ''}"

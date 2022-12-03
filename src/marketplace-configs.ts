@@ -1,8 +1,6 @@
-export enum MarketPlaceIds {
-    Steam = 1
-}
+import { MarketPlaceIds } from './marketplace-ids';
 
-export const MarketPlaces = [
+export const MarketPlaceConfigs = [
     {
         id: MarketPlaceIds.Steam,
         name: 'Steam',

@@ -1,6 +1,6 @@
 import { Writable, writable } from 'svelte/store';
 
-import type { MarketPlaceIds } from './marketplaces';
+import type { MarketPlaceIds } from './marketplace-ids';
 
 export type Responses = {
     queryString: string | null;
