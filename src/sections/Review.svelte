@@ -6,7 +6,7 @@
   import { responses } from '../stores';
   import { isNil } from "lodash-es";
   import { derived } from "svelte/store";
-  import MarketPlaces from '../marketplaces';
+  import { MarketPlaces } from '../marketplaces';
   import type { OutgoingWatch } from "../outgoing-watch";
 
   const requestUrl = 'https://pricehawk.azurewebsites.net/api/requests?code=7fQONg1Z1LPrG72HkrtTnuHhaPb2splJYV7WSg4KdK8ZAzFuRvly0A==';

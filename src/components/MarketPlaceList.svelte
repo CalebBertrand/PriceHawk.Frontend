@@ -1,6 +1,6 @@
 <script type="typescript">
   import { createEventDispatcher } from 'svelte';
-  import MarketPlaces from '../marketplaces';
+  import { MarketPlaces } from '../marketplaces';
 
   const valuesChangedDispatcher = createEventDispatcher();
   export let selectable = false;
