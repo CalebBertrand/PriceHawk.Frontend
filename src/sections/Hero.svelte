@@ -12,7 +12,7 @@
 </script>
 <style type="scss">
   #hero {
-    background-image: url('../assets/hero.jpg');
+    background-image: url('/hero.jpg');
     background-size: cover;
     background-attachment: fixed;
 

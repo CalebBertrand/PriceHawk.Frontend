@@ -79,7 +79,7 @@
 </script>
 <style>
   #search {
-    background-image: url('../assets/search-bg.jpg');
+    background-image: url('/search-bg.jpg');
     background-size: cover;
     background-attachment: fixed;
   }
