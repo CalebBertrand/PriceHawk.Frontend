@@ -2,6 +2,7 @@
   import Popup from "../components/Popup.svelte";
   import Button from "../components/Button.svelte";
   import Header from "../components/Header.svelte";
+  import Input from '../components/Input.svelte';
   import ValidationErrors from "../components/ValidationErrors.svelte";
   import { responses } from '../stores';
   import { isNil } from "lodash-es";
@@ -9,6 +10,7 @@
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
 
+  const verificationUrl = '';
   const requestUrl = 'https://pricehawk.azurewebsites.net/api/requests?code=7fQONg1Z1LPrG72HkrtTnuHhaPb2splJYV7WSg4KdK8ZAzFuRvly0A==';
   const timeUnitsToDays = {
     days: 1,
@@ -16,44 +18,59 @@
     months: 30
   };
 
-  let popupDisplayed = false;
-  function showPopup(): void {
-    popupDisplayed = true;
+  let loading = false;
+  let howItWorksPopup = false;
+  let verificationCode: number = null;
+  let verificationPopup = false;
+  let verified = false;
+
+  function updateVerificationCode(code: number) {
+    verificationCode = code;
+    verified = false;
   }
 
-  let loading = false;
-  function submit() {
-    grecaptcha.ready(() => {
-      grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'}).then((token) => {
-        loading = true;
+  async function sendVerificationEmail() {
+    loading = true;
+    await fetch(verificationUrl + '?email=' + $responses.contact, {
+      method: 'POST',
+    });
+    verificationPopup = true;
+    loading = false;
+  }
 
-        const { queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
-        const dayCount = timeRange * timeUnitsToDays[timeUnit];
-        fetch(requestUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: queryString,
-            price: priceWatch,
-            dayCount: dayCount,
-            captchaToken: token,
-            marketplaceIds: marketplaces
-          } as OutgoingWatch)
-        })
-      }).then(() => {
-        loading = false;
+  async function submit() {
+    loading = true;
+    grecaptcha.ready(async () => {
+      const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'});
+      const { queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
+      const dayCount = timeRange * timeUnitsToDays[timeUnit];
+      await fetch(requestUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: queryString,
+          price: priceWatch,
+          dayCount: dayCount,
+          captchaToken: token,
+          marketplaceIds: marketplaces,
+          verificationCode: verificationCode
+        } as OutgoingWatch)
       });
+
+      loading = false;
     });
   }
 
-  const validationErrors = derived(responses, ({ queryString, priceWatch, marketplaces, timeRange }) => {
+  const validationErrors = derived(responses, ({ queryString, priceWatch, marketplaces, timeRange, contact }) => {
     let errors = [];
     if (!queryString) errors.push('search term missing');
     if (isNil(priceWatch)) errors.push('desired price missing');
     if (isNil(marketplaces) || !marketplaces.length) errors.push('at least one marketplace should be selected');
     if (isNil(timeRange) || timeRange <= 0) errors.push('the time range should be greater than 0');
+    if (isNil(contact)) errors.push('email required');
+    else if (!/^\S+@\S+\.\S+$/.test(contact)) errors.push('invalid email');
     return errors;
   }); 
 </script>
@@ -62,7 +79,7 @@
   <div class="pb-3">
     <h5 class="bg-black text-slate-300 float-right rounded p-3 mb-4 cursor-pointer hover:bg-slate-600 transition-colors
       w-full sm:w-auto"
-      on:click={showPopup} on:keyup={showPopup}>
+      on:click={() => howItWorksPopup = true} on:keyup={() => howItWorksPopup = true}>
       <i class="fa fa-info-circle mr-1"></i>
       How Does It Work?
     </h5>
@@ -117,10 +134,10 @@
   
       <Button color="red" 
         applyClass="rounded mt-3" 
-        callBack={submit} 
-        disabled={!!$validationErrors.length}
+        callBack={sendVerificationEmail} 
+        disabled={!!$validationErrors.length || loading}
         size='lg'>
-        Submit
+        Confirm
       </Button>
     </div>
     <div class="md:w-1/2 py-8">
@@ -139,6 +156,26 @@
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
     text="Twice a day, PriceHawk will search for products on [insert supported stores here... still in development!] that match the parameters you set here. 
     When a match is found, an email or text message is sent to notify you."
-    bind:displayed={popupDisplayed}>
+    bind:displayed={howItWorksPopup}>
+  </Popup>
+
+  <Popup header="Last Thing: Enter the Verification Code Just Sent to Your Email." 
+    bind:displayed={verificationPopup} style='black'>
+    <div class="w-full h-full flex justify-center items-center">
+      <div class="h-12 w-11/12 mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
+        <Input applyClass='flex-grow rounded-l-lg {verified && 'border-green-400 border-2 focus:border-green-300'}' 
+          type='number' 
+          placeholder='5-digit code here...'
+          on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
+        <Button color={verified ? 'green' : 'red'}
+          applyClass='px-5'
+          callBack={() => verified = true}
+          disabled={!verificationCode || verificationCode < 10000 || verified}>
+          <span class="text-shadow whitespace-nowrap">
+            {verified ? 'Success!' : 'Verify And Send Watch'}
+          </span>
+        </Button>
+      </div>
+    </div>
   </Popup>
 </section>

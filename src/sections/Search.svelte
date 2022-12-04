@@ -38,6 +38,17 @@
       ]
     },
     {
+      header: "<em>What Email</em> Should Recieve Price Notifications?",
+      inputs: [
+        {
+          name: "contact",
+          type: "email",
+          main: true,
+          placeholder: 'example@gmail.com'
+        }
+      ]
+    },
+    {
       header: "<em>When</em> Are You Planning To Buy?",
       inputs: [
         {

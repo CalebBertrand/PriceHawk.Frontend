@@ -7,6 +7,7 @@
   export let options = [];
   export let initialValue: string | number = '';
   export let applyClass: string = '';
+  export let disabled = false;
   export const dispatchValueChanged = createEventDispatcher();
 
   let selected = options.includes(initialValue) 
@@ -36,6 +37,7 @@
     value={initialValue}
     min="0"
     maxlength="100"
+    disabled={disabled}
     on:input={e => valueChanged(e.currentTarget.value)}>
 {:else if type === 'select'}
   <div class="relative inline-block text-left h-full bg-slate-800 text-slate-200 {applyClass}">

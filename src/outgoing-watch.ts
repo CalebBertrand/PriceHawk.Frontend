@@ -1,4 +1,4 @@
-import { MarketPlaceIds } from "./marketplace-ids";
+import type { MarketPlaceIds } from "./marketplace-ids";
 
 export type OutgoingWatch = {
     query: string;
@@ -6,4 +6,5 @@ export type OutgoingWatch = {
     marketplaceIds: Array<MarketPlaceIds>;
     captchaToken: string;
     dayCount: number;
+    verificationCode: number;
 }

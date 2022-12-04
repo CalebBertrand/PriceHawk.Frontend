@@ -9,6 +9,7 @@ export type Responses = {
     timeRange: number | null;
     timeUnit: 'days' | 'weeks' | 'months' | null;
     marketplaces: Array<MarketPlaceIds>;
+    contact: string;
 }
 
 export const responses: Writable<Responses> = writable({
@@ -17,5 +18,6 @@ export const responses: Writable<Responses> = writable({
     priceWatch: null,
     timeRange: 14,
     timeUnit: 'days',
-    marketplaces: []
+    marketplaces: [],
+    contact: null
 });
