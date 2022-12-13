@@ -42,7 +42,7 @@
     loading = true;
     grecaptcha.ready(async () => {
       const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'});
-      const { queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
+      const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
       const dayCount = timeRange * timeUnitsToDays[timeUnit];
       await fetch(requestUrl, {
         method: 'POST',
@@ -50,6 +50,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          contact: contact,
           query: queryString,
           price: priceWatch,
           dayCount: dayCount,
