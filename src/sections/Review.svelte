@@ -9,9 +9,8 @@
   import { derived } from "svelte/store";
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
+  import env from '../../environment.json';
 
-  const verificationUrl = '';
-  const requestUrl = 'https://pricehawk.azurewebsites.net/api/requests?code=7fQONg1Z1LPrG72HkrtTnuHhaPb2splJYV7WSg4KdK8ZAzFuRvly0A==';
   const timeUnitsToDays = {
     days: 1,
     weeks: 7,
@@ -23,6 +22,7 @@
   let verificationCode: number = null;
   let verificationPopup = false;
   let verified = false;
+  let sentVerification = false;
 
   function updateVerificationCode(code: number) {
     verificationCode = code;
@@ -30,12 +30,15 @@
   }
 
   async function sendVerificationEmail() {
-    loading = true;
-    await fetch(verificationUrl + '?email=' + $responses.contact, {
-      method: 'POST',
-    });
     verificationPopup = true;
-    loading = false;
+
+    if (!sentVerification) {
+      loading = true;
+      await fetch(env["VerifyContactEndpoint"] + '?email=' + $responses.contact, { method: 'POST' })
+        .then(() => sentVerification = true)
+        .catch(() => sentVerification = false);
+      loading = false;
+    }
   }
 
   async function submit() {
@@ -44,21 +47,23 @@
       const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'});
       const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
       const dayCount = timeRange * timeUnitsToDays[timeUnit];
-      await fetch(requestUrl, {
+      const request = {
+        contact: contact,
+        query: queryString,
+        price: priceWatch,
+        dayCount: dayCount,
+        captchaToken: token,
+        marketplaceIds: marketplaces,
+        verificationCode: +verificationCode
+      } as OutgoingWatch;
+
+      await fetch(env["RequestsEndpoint"], {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'text/plain'
         },
-        body: JSON.stringify({
-          contact: contact,
-          query: queryString,
-          price: priceWatch,
-          dayCount: dayCount,
-          captchaToken: token,
-          marketplaceIds: marketplaces,
-          verificationCode: verificationCode
-        } as OutgoingWatch)
-      });
+        body: JSON.stringify(request)
+      }); 
 
       loading = false;
     });
@@ -170,8 +175,8 @@
           on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
         <Button color={verified ? 'green' : 'red'}
           applyClass='px-5'
-          callBack={() => verified = true}
-          disabled={!verificationCode || verificationCode < 10000 || verified}>
+          callBack={() => submit}
+          disabled={loading || verified}>
           <span class="text-shadow whitespace-nowrap">
             {verified ? 'Success!' : 'Verify And Send Watch'}
           </span>

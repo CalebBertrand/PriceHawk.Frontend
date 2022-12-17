@@ -1,0 +1,12 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "price-hawk.frontend": {
+      "appLocation": ".",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run vite-build",
+      "run": "npm run vite",
+      "appDevserverUrl": "http://localhost:5173"
+    }
+  }
+}

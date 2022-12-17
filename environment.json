@@ -1,0 +1,4 @@
+{
+    "VerifyContactEndpoint": "http://localhost:7071/api/VerifyContact",
+    "RequestsEndpoint": "http://localhost:7071/api/requests"
+}
