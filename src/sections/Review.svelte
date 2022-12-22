@@ -11,6 +11,8 @@
   import type { OutgoingWatch } from "src/outgoing-watch";
   import env from '../../environment.json';
 
+  const resolvedEnv = window.location.hostname.includes('localhost') ? env["Local"] : env["Production"];
+
   const timeUnitsToDays = {
     days: 1,
     weeks: 7,
@@ -34,7 +36,7 @@
 
     if (!sentVerification) {
       loading = true;
-      await fetch(env["VerifyContactEndpoint"] + '?email=' + $responses.contact, { method: 'POST' })
+      await fetch(resolvedEnv["VerifyContactEndpoint"] + '?email=' + $responses.contact, { method: 'POST' })
         .then(() => sentVerification = true)
         .catch(() => sentVerification = false);
       loading = false;
@@ -57,7 +59,7 @@
         verificationCode: +verificationCode
       } as OutgoingWatch;
 
-      await fetch(env["RequestsEndpoint"], {
+      await fetch(resolvedEnv["RequestsEndpoint"], {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
