@@ -4,7 +4,7 @@
         "RequestsEndpoint": "http://localhost:7071/api/requests"
     },
     "Production": {
-        "VerifyContactEndpoint": "https://pricehawk.azurewebsites.net/api/VerifyContact?code=V5sB0MYj_JCuFjOtcOKXkE0g62IhtRygpkzpSqpJr6ovAzFuF3A4Hw==",
-        "RequestsEndpoint": "https://pricehawk.azurewebsites.net/api/requests?code=7fQONg1Z1LPrG72HkrtTnuHhaPb2splJYV7WSg4KdK8ZAzFuRvly0A=="
+        "VerifyContactEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/VerifyContact",
+        "RequestsEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/Requests"
     }
 }
