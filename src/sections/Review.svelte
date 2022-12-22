@@ -9,7 +9,6 @@
   import { derived } from "svelte/store";
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
-  import env from '../../environment.json';
 
   const timeUnitsToDays = {
     days: 1,
@@ -34,7 +33,7 @@
 
     if (!sentVerification) {
       loading = true;
-      await fetch(env["VerifyContactEndpoint"] + '?email=' + $responses.contact, { method: 'POST' })
+      await fetch(process.env["VerifyContactEndpoint"] + '?email=' + $responses.contact, { method: 'POST' })
         .then(() => sentVerification = true)
         .catch(() => sentVerification = false);
       loading = false;
@@ -57,14 +56,17 @@
         verificationCode: +verificationCode
       } as OutgoingWatch;
 
-      await fetch(env["RequestsEndpoint"], {
+      const res = await fetch(process.env["RequestsEndpoint"], {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
         },
         body: JSON.stringify(request)
-      }); 
+      });
 
+      console.log(res);
+
+      if (res.ok) verified = true;
       loading = false;
     });
   }
@@ -169,7 +171,7 @@
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full flex justify-center items-center">
       <div class="h-12 w-11/12 mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='flex-grow rounded-l-lg {verified && 'border-green-400 border-2 focus:border-green-300'}' 
+        <Input applyClass='flex-grow rounded-l-lg pl-3 {verified && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
           placeholder='5-digit code here...'
           on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
@@ -178,9 +180,17 @@
           callBack={() => submit}
           disabled={loading || verified}>
           <span class="text-shadow whitespace-nowrap">
-            {verified ? 'Success!' : 'Verify And Send Watch'}
+            {
+              loading ? 
+                'Loading...' 
+                : verified 
+                  ? 'Success!' 
+                  : 'Verify And Send Watch'
+            }
           </span>
         </Button>
+        <br>
+        <Header text="Your Price Watch Has Been Set, You Should Recieve An Email When Any Matches Are Found!"></Header>
       </div>
     </div>
   </Popup>
