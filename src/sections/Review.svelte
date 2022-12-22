@@ -23,12 +23,12 @@
   let howItWorksPopup = false;
   let verificationCode: number = null;
   let verificationPopup = false;
-  let verified = false;
+  let sent = false;
   let sentVerification = false;
 
   function updateVerificationCode(code: number) {
     verificationCode = code;
-    verified = false;
+    sent = false;
   }
 
   async function sendVerificationEmail() {
@@ -67,7 +67,10 @@
         body: JSON.stringify(request)
       });
 
-      if (res.ok) verified = true;
+      if (res.ok) {
+        sent = true;
+        verificationPopup = false;
+      }
       loading = false;
     });
   }
@@ -168,31 +171,42 @@
     bind:displayed={howItWorksPopup}>
   </Popup>
 
-  <Popup header="Last Thing: Enter the Verification Code Just Sent to Your Email." 
+  <Popup header='Last Thing: Enter the Verification Code Just Sent to Your Email.' 
     bind:displayed={verificationPopup} style='black'>
-    <div class="w-full h-full flex justify-center items-center">
-      <div class="h-12 w-11/12 mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='flex-grow rounded-l-lg pl-3 {verified && 'border-green-400 border-2 focus:border-green-300'}' 
+    <div class="w-full h-full">
+      <div class="h-12 w-11/12 mx-auto mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
+        <Input applyClass='flex-grow rounded-l-lg pl-3 {sent && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
+          disabled={loading || sent}
           placeholder='5-digit code here...'
           on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
-        <Button color={verified ? 'green' : 'red'}
+        <Button color={sent ? 'green' : 'red'}
           applyClass='px-5'
           callBack={() => submit}
-          disabled={loading || verified}>
+          disabled={loading || sent}>
           <span class="text-shadow whitespace-nowrap">
+            {#if loading}
+              <i class="fa fa-circle-notch fa-spin mr-1"></i>
+            {/if}
             {
               loading ? 
-                'Loading...' 
-                : verified 
+                'Loading' 
+                : sent 
                   ? 'Success!' 
                   : 'Verify And Send Watch'
             }
           </span>
         </Button>
-        <br>
-        <Header text="Your Price Watch Has Been Set, You Should Recieve An Email When Any Matches Are Found!"></Header>
       </div>
+      {#if sent}
+        <div class="h-12 w-11/12 mx-auto mt-6 mr-4 flex justify-items-center text-center">
+          <Header text="Success! You should now recieve price notifications."></Header>
+        </div>
+      {/if}
     </div>
+  </Popup>
+
+  <Popup header='Success! You will now recieve price notifications.' 
+    bind:displayed={sent} text='A check will be made for your query immediately, and twice a day from now on.'>
   </Popup>
 </section>
