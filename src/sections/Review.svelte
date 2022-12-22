@@ -59,14 +59,15 @@
         verificationCode: +verificationCode
       } as OutgoingWatch;
 
-      await fetch(resolvedEnv["RequestsEndpoint"], {
+      const res = await fetch(resolvedEnv["RequestsEndpoint"], {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
         },
         body: JSON.stringify(request)
-      }); 
+      });
 
+      if (res.ok) verified = true;
       loading = false;
     });
   }
@@ -171,7 +172,7 @@
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full flex justify-center items-center">
       <div class="h-12 w-11/12 mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='flex-grow rounded-l-lg {verified && 'border-green-400 border-2 focus:border-green-300'}' 
+        <Input applyClass='flex-grow rounded-l-lg pl-3 {verified && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
           placeholder='5-digit code here...'
           on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
@@ -180,9 +181,17 @@
           callBack={() => submit}
           disabled={loading || verified}>
           <span class="text-shadow whitespace-nowrap">
-            {verified ? 'Success!' : 'Verify And Send Watch'}
+            {
+              loading ? 
+                'Loading...' 
+                : verified 
+                  ? 'Success!' 
+                  : 'Verify And Send Watch'
+            }
           </span>
         </Button>
+        <br>
+        <Header text="Your Price Watch Has Been Set, You Should Recieve An Email When Any Matches Are Found!"></Header>
       </div>
     </div>
   </Popup>
