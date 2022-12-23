@@ -3,6 +3,7 @@
   import Hero from './sections/Hero.svelte';
   import Review from './sections/Review.svelte';
   import Search from './sections/Search.svelte';
+  import Button from './components/Button.svelte';
   import env from '../environment.json';
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -27,11 +28,15 @@
 </Popup>
 
 <Popup header="Watch Cancelled" 
+  text="Thanks for chosing PriceHawk. Please note that PriceHawk is still under development. If you have feedback, you can reach me through the button below."
   displayed={!!watchToCancelId}>
-  <p class="text-lg">
-    Thanks for chosing PriceHawk. Please note that this product is still under development. 
-    If you have feedback, you can reach the developer on <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/caleb-bertrand/">LinkedIn.</a>
-  </p>
+  <div class="text-center mt-12">
+    <Button color='white' applyClass='rounded-lg shadow-lg'
+      size='lg'
+      callBack={() => window.open('https://www.linkedin.com/in/caleb-bertrand/', '_blank')}>
+      Contact Developer
+    </Button>
+  </div>
 </Popup>
 
 <Hero></Hero>

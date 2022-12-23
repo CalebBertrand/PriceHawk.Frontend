@@ -7,7 +7,7 @@
 
   const colorClasses = {
     red: "bg-red-500 hover:bg-red-600 text-slate-200 disabled:bg-slate-500",
-    white: "bg-slate-200 text-black disabled:bg-slate-500",
+    white: "border-2 border-slate-200 bg-transparent text-slate-200 disabled:border-slate-400 disabled:text-slate-400",
     black: "bg-slate-900 hover:bg-slate-800 text-slate-200 disabled:bg-slate-500",
     green: "bg-green-500 hover:bg-green-400 text-slate-200 disabled:bg-green-400"
   }
