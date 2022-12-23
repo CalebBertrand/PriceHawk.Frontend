@@ -25,6 +25,7 @@
   let verificationPopup = false;
   let sent = false;
   let sentVerification = false;
+  let errorMessage = '';
 
   function updateVerificationCode(code: number) {
     verificationCode = code;
@@ -70,6 +71,18 @@
       if (res.ok) {
         sent = true;
         verificationPopup = false;
+        errorMessage = '';
+
+        const newResponse = $responses;
+        newResponse.marketplaces = [];
+        newResponse.priceWatch = null;
+        newResponse.queryString = '';
+        responses.set(newResponse);
+      } else {
+        const body = await res.json();
+        errorMessage = 'message' in body
+          ? body.message
+          : 'There Was A Problem With The Request, Please Try Again Later';
       }
       loading = false;
     });
@@ -171,7 +184,7 @@
     bind:displayed={howItWorksPopup}>
   </Popup>
 
-  <Popup header='Last Thing: Enter the Verification Code Just Sent to Your Email.' 
+  <Popup header='Last Thing: Enter the Verification Code Sent to Your Email.' 
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full">
       <div class="h-12 w-11/12 mx-auto mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
@@ -198,9 +211,9 @@
           </span>
         </Button>
       </div>
-      {#if sent}
-        <div class="h-12 w-11/12 mx-auto mt-6 mr-4 flex justify-items-center text-center">
-          <Header text="Success! You should now recieve price notifications."></Header>
+      {#if errorMessage}
+        <div class="h-9 mx-auto mt-6 mr-4 text-center">
+          <small class="text-sm text-red-500">{errorMessage}</small>
         </div>
       {/if}
     </div>
