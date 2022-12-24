@@ -47,7 +47,7 @@
   async function submit() {
     loading = true;
     grecaptcha.ready(async () => {
-      const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', {action: 'submit'});
+      const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', { action: 'submit' });
       const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
       const dayCount = timeRange * timeUnitsToDays[timeUnit];
       const request = {
@@ -60,31 +60,36 @@
         verificationCode: +verificationCode
       } as OutgoingWatch;
 
-      const res = await fetch(resolvedEnv["RequestsEndpoint"], {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain'
-        },
-        body: JSON.stringify(request)
-      });
+      try {
+        const res = await fetch(resolvedEnv["RequestsEndpoint"], {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain'
+          },
+          body: JSON.stringify(request)
+        });
 
-      if (res.ok) {
-        sent = true;
-        verificationPopup = false;
-        errorMessage = '';
+        if (res.ok) {
+          sent = true;
+          verificationPopup = false;
+          errorMessage = '';
 
-        const newResponse = $responses;
-        newResponse.marketplaces = [];
-        newResponse.priceWatch = null;
-        newResponse.queryString = '';
-        responses.set(newResponse);
-      } else {
-        const body = await res.json();
-        errorMessage = 'message' in body
-          ? body.message
-          : 'There Was A Problem With The Request, Please Try Again Later';
+          const newResponse = $responses;
+          newResponse.marketplaces = [];
+          newResponse.priceWatch = null;
+          newResponse.queryString = '';
+          responses.set(newResponse);
+        } else {
+          const body = await res.json();
+          errorMessage = 'message' in body
+            ? body.message
+            : 'There Was A Problem With The Request, Please Try Again Later';
+        }
+        loading = false;
+      } catch (error) {
+        errorMessage = error.message;
+        loading = false;
       }
-      loading = false;
     });
   }
 
