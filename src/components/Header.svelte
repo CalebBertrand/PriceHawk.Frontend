@@ -6,6 +6,6 @@
     .replace('</em>', '</span>');
 </script>
 
-<h1 class="text-3xl md:text-5xl font-bold mb-7">
+<h1 class="text-2xl md:text-5xl font-bold mb-7">
   {@html parsed}
 </h1>

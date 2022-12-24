@@ -156,7 +156,7 @@
           <span class="text-xl">Not set.</span>
         {/if}
       </div>
-  
+
       <Button color="red" 
         applyClass="rounded mt-3" 
         callBack={sendVerificationEmail} 
@@ -187,14 +187,14 @@
   <Popup header='Last Thing: Enter the Verification Code Sent to Your Email.' 
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full">
-      <div class="h-12 w-11/12 mx-auto mt-6 mr-4 flex flex-row justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='flex-grow rounded-l-lg pl-3 {sent && 'border-green-400 border-2 focus:border-green-300'}' 
+      <div class="w-full md:w-11/12 mx-auto mt-12 mr-4 flex md:flex-row flex-col justify-items-stretch rounded-lg overflow-hidden shadow-xl">
+        <Input applyClass='h-14 flex-grow pl-3 {sent && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
           disabled={loading || sent}
           placeholder='5-digit code here...'
           on:valueChanged={e => updateVerificationCode(e.detail.value)}></Input>
         <Button color={sent ? 'green' : 'red'}
-          applyClass='px-5'
+          applyClass='px-5 h-14'
           callBack={() => submit}
           disabled={loading || sent}>
           <span class="text-shadow whitespace-nowrap">

@@ -13,8 +13,8 @@
   }
 
   const sizeClasses = {
-    md: 'p-3 text-xl',
-    lg: 'px-8 pb-3 pt-2 text-2xl hover:scale-110 transition-transform duration-100'
+    md: 'p-3 text-lg md:text-xl',
+    lg: 'px-8 pb-3 pt-2 text-xl md:text-2xl hover:scale-110 transition-transform duration-100'
   }
 </script>
 
