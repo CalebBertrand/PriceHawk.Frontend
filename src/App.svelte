@@ -5,6 +5,7 @@
   import Search from './sections/Search.svelte';
   import Button from './components/Button.svelte';
   import env from '../environment.json';
+  import 'isomorphic-fetch';
 
   const urlParams = new URLSearchParams(window.location.search);
   let watchToCancelId = urlParams.get('finishId');

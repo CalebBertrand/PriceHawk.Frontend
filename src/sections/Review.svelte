@@ -10,6 +10,7 @@
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
   import env from '../../environment.json';
+  import 'isomorphic-fetch';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env["Local"] : env["Production"];
 

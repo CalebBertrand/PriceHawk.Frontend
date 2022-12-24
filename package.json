@@ -13,6 +13,7 @@
     "@azure/static-web-apps-cli": "^1.0.3",
     "@sveltejs/vite-plugin-svelte": "^1.0.2",
     "@types/grecaptcha": "^3.0.4",
+    "@types/isomorphic-fetch": "^0.0.36",
     "@types/lodash-es": "^4.17.6",
     "autoprefixer": "^10.4.12",
     "node-sass": "^7.0.3",
@@ -26,6 +27,7 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
     "lodash-es": "^4.17.21"
   }
 }
