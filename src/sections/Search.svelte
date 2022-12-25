@@ -98,9 +98,9 @@
 
 <section id="search" class="h-screen flex items-center relative">
   {#if stageIndex !== 0}
-    <div class="absolute top-4 left-4" transition:fade={{ duration: 200 }}>
+    <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"
-        applyClass="rounded"
+        applyClass="rounded focus:scale-110 hover:scale-110 transition-transform duration-100"
         callBack={() => stageIndex = clamp(stageIndex - 1, 0, 2)}>
         Back
       </Button>

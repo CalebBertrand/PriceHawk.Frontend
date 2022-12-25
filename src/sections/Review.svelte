@@ -51,7 +51,7 @@
       const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', { action: 'submit' });
       const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
       const dayCount = timeRange * timeUnitsToDays[timeUnit];
-      const request = {
+      const request: OutgoingWatch = {
         contact: contact,
         query: queryString,
         price: priceWatch,
@@ -59,7 +59,7 @@
         captchaToken: token,
         marketplaceIds: marketplaces,
         verificationCode: +verificationCode
-      } as OutgoingWatch;
+      };
 
       try {
         const res = await fetch(resolvedEnv["RequestsEndpoint"], {
@@ -194,7 +194,7 @@
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full">
       <div class="w-full md:w-11/12 mx-auto mt-12 mr-4 flex md:flex-row flex-col justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='h-14 flex-grow pl-3 {sent && 'border-green-400 border-2 focus:border-green-300'}' 
+        <Input applyClass='h-14 flex-grow pl-3 text-center md:text-left {sent && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
           disabled={loading || sent}
           placeholder='5-digit code here...'
@@ -219,7 +219,7 @@
       </div>
       {#if errorMessage}
         <div class="h-9 mx-auto mt-6 mr-4 text-center">
-          <small class="text-sm text-red-500">{errorMessage}</small>
+          <small class="text-red-500">{errorMessage}</small>
         </div>
       {/if}
     </div>

@@ -13,12 +13,7 @@
     const finishEndpoint = window.location.hostname.includes('localhost') 
       ? env["Local"]["FinishWatchEndpoint"]
       : env["Production"]["FinishWatchEndpoint"];
-    fetch(`${finishEndpoint}?id=${watchToCancelId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain'
-      }
-    });
+    fetch(`${finishEndpoint}?id=${watchToCancelId}`, { method: 'POST', keepalive: true });
   }
 </script>
 
