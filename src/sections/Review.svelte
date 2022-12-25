@@ -108,8 +108,7 @@
 
 <section id="review" class="min-h-screen text-slate-200 bg-gradient-to-tr from-black to-slate-700">
   <div class="pb-3">
-    <h5 class="bg-black text-slate-300 float-right rounded p-3 mb-4 cursor-pointer hover:bg-slate-600 transition-colors
-      w-full sm:w-auto"
+    <h5 class=" text-slate-200 float-right rounded my-3 ml-3 cursor-pointer w-auto text-shadow text-sm md:text-lg"
       on:click={() => howItWorksPopup = true} on:keyup={() => howItWorksPopup = true}>
       <i class="fa fa-info-circle mr-1"></i>
       How Does It Work?
