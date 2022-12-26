@@ -94,7 +94,7 @@
 
   let loading = false;
   const previewResults = responses.pipe(
-    filter(({ queryString, priceWatch, marketplaces }) => ),
+    filter(({ queryString, priceWatch, marketplaces }) => queryString.length > 5 && priceWatch > 0 && marketplaces.length > 0),
     throttleTime(100),
     tap(() => (loading = true)),
     switchMap(({ queryString }) =>
