@@ -1,4 +1,4 @@
-import { Writable, writable } from 'svelte/store';
+import { BehaviorSubject } from 'rxjs';
 
 import type { MarketPlaceIds } from './marketplace-ids';
 
@@ -12,7 +12,7 @@ export type Responses = {
     contact: string;
 }
 
-export const responses: Writable<Responses> = writable({
+export const responses: BehaviorSubject<Responses> = new BehaviorSubject({
     queryString: null,
     currency: '$',
     priceWatch: null,

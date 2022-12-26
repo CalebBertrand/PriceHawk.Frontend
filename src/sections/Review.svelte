@@ -6,11 +6,11 @@
   import ValidationErrors from "../components/ValidationErrors.svelte";
   import { responses } from '../stores';
   import { isNil } from "lodash-es";
-  import { derived } from "svelte/store";
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
   import env from '../../environment.json';
   import 'isomorphic-fetch';
+  import { map } from "rxjs";
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env["Local"] : env["Production"];
 
@@ -79,7 +79,7 @@
           newResponse.marketplaces = [];
           newResponse.priceWatch = null;
           newResponse.queryString = '';
-          responses.set(newResponse);
+          responses.next(newResponse);
         } else {
           const body = await res.json();
           errorMessage = 'message' in body
@@ -94,16 +94,18 @@
     });
   }
 
-  const validationErrors = derived(responses, ({ queryString, priceWatch, marketplaces, timeRange, contact }) => {
-    let errors = [];
-    if (!queryString) errors.push('search term missing');
-    if (isNil(priceWatch)) errors.push('desired price missing');
-    if (isNil(marketplaces) || !marketplaces.length) errors.push('at least one marketplace should be selected');
-    if (isNil(timeRange) || timeRange <= 0) errors.push('the time range should be greater than 0');
-    if (isNil(contact)) errors.push('email required');
-    else if (!/^\S+@\S+\.\S+$/.test(contact)) errors.push('invalid email');
-    return errors;
-  }); 
+  const validationErrors = responses.pipe(
+    map(({ queryString, priceWatch, marketplaces, timeRange, contact }) => {
+      let errors = [];
+      if (!queryString) errors.push('search term missing');
+      if (isNil(priceWatch)) errors.push('desired price missing');
+      if (isNil(marketplaces) || !marketplaces.length) errors.push('at least one marketplace should be selected');
+      if (isNil(timeRange) || timeRange <= 0) errors.push('the time range should be greater than 0');
+      if (isNil(contact)) errors.push('email required');
+      else if (!/^\S+@\S+\.\S+$/.test(contact)) errors.push('invalid email');
+      return errors;
+    })
+  ); 
 </script>
 
 <section id="review" class="min-h-screen text-slate-200 bg-gradient-to-tr from-black to-slate-700">
@@ -193,7 +195,7 @@
     bind:displayed={verificationPopup} style='black'>
     <div class="w-full h-full">
       <div class="w-full md:w-11/12 mx-auto mt-12 mr-4 flex md:flex-row flex-col justify-items-stretch rounded-lg overflow-hidden shadow-xl">
-        <Input applyClass='h-14 flex-grow pl-3 text-center md:text-left {sent && 'border-green-400 border-2 focus:border-green-300'}' 
+        <Input applyClass='h-14 flex-grow md:pl-3 text-center md:text-left {sent && 'border-green-400 border-2 focus:border-green-300'}' 
           type='number' 
           disabled={loading || sent}
           placeholder='5-digit code here...'

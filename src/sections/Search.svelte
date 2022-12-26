@@ -6,6 +6,12 @@
   import { responses } from '../stores';
   import { clamp, isNil, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
+  import { fromFetch } from 'rxjs/fetch';
+  import { throttleTime, switchMap, filter, tap, startWith } from 'rxjs/operators';
+  import 'isomorphic-fetch';
+  import env from '../../environment.json';
+
+  const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
 
   const stages = [
     {
@@ -49,7 +55,7 @@
       ]
     },
     {
-      header: "<em>When</em> Are You Planning To Buy?",
+      header: "<em>When</em> Is The Latest You Would Buy It?",
       inputs: [
         {
           name: 'timeRange',
@@ -83,8 +89,21 @@
   };
 
   function updateSelectedMarketplaces(change) {
-    responses.set(set($responses, 'marketplaces', change.detail.value))
+    responses.next(set(responses.value, 'marketplaces', change.detail.value))
   }
+
+  let loading = false;
+  const previewResults = responses.pipe(
+    filter(({ queryString, priceWatch, marketplaces }) => ),
+    throttleTime(100),
+    tap(() => (loading = true)),
+    switchMap(({ queryString }) =>
+      fromFetch(`${resolvedEnv['PreviewEndpoint']}?query=${encodeURIComponent(queryString)}`)
+    ),
+    switchMap(response => response.json()),
+    tap(() => (loading = false)),
+    startWith([])
+  );
 
   $: stage = stages[stageIndex];
 </script>
@@ -96,7 +115,7 @@
   }
 </style>
 
-<section id="search" class="h-screen flex items-center relative">
+<section id="search" class="h-screen flex flex-col items-center relative">
   {#if stageIndex !== 0}
     <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"
@@ -141,4 +160,17 @@
       {/if}
     </div>
   {/key}
+  <div class="w-full p-5 overflow-x-scroll">
+    {#each $previewResults as result}
+      <div class="p-3 rounded-lg shadow-lg bg-slate-200 text-slate-800 text-center h-40">
+        {#if result.imageUrl}
+          <img class="w-full rounded" src={result.imgUrl} alt={result.name}>
+        {/if}
+        <h3 class="text-xl">{result.name}</h3>
+        {#if result.description}
+          <p>{result.description}</p>
+        {/if}
+      </div>
+    {/each}
+  </div>
 </section>

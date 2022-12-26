@@ -2,11 +2,13 @@
     "Local": {
         "VerifyContactEndpoint": "http://localhost:7071/api/VerifyContact",
         "RequestsEndpoint": "http://localhost:7071/api/requests",
-        "FinishWatchEndpoint": "http://localhost:7071/api/FinishWatch"
+        "FinishWatchEndpoint": "http://localhost:7071/api/FinishWatch",
+        "PreviewEndpoint": "http://localhost:7071/api/Preview"
     },
     "Production": {
         "VerifyContactEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/VerifyContact",
         "RequestsEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/Requests",
-        "FinishWatchEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/FinishWatch"
+        "FinishWatchEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/FinishWatch",
+        "PreviewEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/Preview"
     }
 }
