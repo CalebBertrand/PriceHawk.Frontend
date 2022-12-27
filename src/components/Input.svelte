@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
 
-  export let type = 'text';
+  export let type: 'text' | 'select' | 'number' | 'email' = 'text';
   export let placeholder: string | number = '';
   export let options = [];
   export let initialValue: string | number = '';

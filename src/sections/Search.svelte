@@ -1,4 +1,4 @@
-<script>
+<script type="typescript">
   import { fade, fly } from 'svelte/transition';
   import Button from '../components/Button.svelte';
   import Header from '../components/Header.svelte';
@@ -13,7 +13,18 @@
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
 
-  const stages = [
+  type StageConfig = {
+    header: string;
+    inputs?: {
+      name: string;
+      type: 'text' | 'select' | 'number' | 'email';
+      placeholder?: string | number;
+      main: boolean;
+      storedValue?: unknown;
+      options?: string[];
+    }[]
+  };
+  const stages: StageConfig[] = [
     {
       header: "<em>What</em> Do You Want to Buy?",
       inputs: [
@@ -94,12 +105,17 @@
 
   let loading = false;
   const previewResults = responses.pipe(
-    filter(({ queryString, priceWatch, marketplaces }) => queryString.length > 5 && priceWatch > 0 && marketplaces.length > 0),
+    filter(({ queryString, priceWatch, marketplaces }) => queryString && queryString.length > 5 && priceWatch > 0 && marketplaces.length > 0),
     throttleTime(100),
     tap(() => (loading = true)),
-    switchMap(({ queryString }) =>
-      fromFetch(`${resolvedEnv['PreviewEndpoint']}?query=${encodeURIComponent(queryString)}`)
-    ),
+    switchMap(({ queryString, priceWatch, marketplaces }) => {
+      const request = new Request(resolvedEnv['PreviewEndpoint'], {
+        method: 'POST',
+        body: JSON.stringify({ query: queryString, price: priceWatch, marketplaceIds: marketplaces }),
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      return fromFetch(request);
+    }),
     switchMap(response => response.json()),
     tap(() => (loading = false)),
     startWith([])
@@ -115,7 +131,7 @@
   }
 </style>
 
-<section id="search" class="h-screen flex flex-col items-center relative">
+<section id="search" class="h-screen flex flex-col justify-center relative">
   {#if stageIndex !== 0}
     <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"
@@ -160,16 +176,16 @@
       {/if}
     </div>
   {/key}
-  <div class="w-full p-5 overflow-x-scroll">
+  <div class="w-full p-5 mt-4 overflow-x-hidden flex items-stretch">
     {#each $previewResults as result}
-      <div class="p-3 rounded-lg shadow-lg bg-slate-200 text-slate-800 text-center h-40">
-        {#if result.imageUrl}
-          <img class="w-full rounded" src={result.imgUrl} alt={result.name}>
-        {/if}
-        <h3 class="text-xl">{result.name}</h3>
-        {#if result.description}
-          <p>{result.description}</p>
-        {/if}
+      <div class="p-3 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center w-1/2 md:w-1/3 lg:w-1/4 float-left mx-3 hover:scale-110 transition-transform duration-100">
+        <a href={result.url} target="_blank" rel="noreferrer">
+          {#if result.imageUrl}
+            <img class="w-full rounded" src={result.imageUrl} alt={result.name}>
+          {/if}
+          <h3 class="text-lg text-slate-400">{result.name}</h3>
+          <h2 class="text-3xl my-2">${result.price ?? 0}</h2>
+        </a>
       </div>
     {/each}
   </div>
