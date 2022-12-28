@@ -5,7 +5,7 @@
   import Input from '../components/Input.svelte';
   import ValidationErrors from "../components/ValidationErrors.svelte";
   import { responses } from '../stores';
-  import { isNil } from "lodash-es";
+  import { clone, isNil } from "lodash-es";
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { OutgoingWatch } from "src/outgoing-watch";
   import env from '../../environment.json';
@@ -75,11 +75,13 @@
           verificationPopup = false;
           errorMessage = '';
 
-          const newResponse = $responses;
+          const newResponse = clone($responses);
           newResponse.marketplaces = [];
           newResponse.priceWatch = null;
           newResponse.queryString = '';
           responses.next(newResponse);
+
+          window.scroll({ top: 0 });
         } else {
           const body = await res.json();
           errorMessage = 'message' in body

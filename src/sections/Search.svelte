@@ -4,10 +4,10 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
-  import { clamp, isNil, set } from 'lodash-es';
+  import { clamp, clone, isEqual, isNil, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
-  import { throttleTime, switchMap, filter, tap, startWith } from 'rxjs/operators';
+  import { switchMap, filter, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
 
@@ -99,26 +99,37 @@
     }
   };
 
-  function updateSelectedMarketplaces(change) {
-    responses.next(set(responses.value, 'marketplaces', change.detail.value))
+  function updateResponseByName(name: string, value: unknown) {
+    responses.next(clone(set(responses.value, name, value)));
   }
 
   let loading = false;
   const previewResults = responses.pipe(
-    filter(({ queryString, priceWatch, marketplaces }) => queryString && queryString.length > 5 && priceWatch > 0 && marketplaces.length > 0),
-    throttleTime(100),
+    debounceTime(800),
+    filter(({ queryString, priceWatch, marketplaces }) => 
+      queryString &&
+      queryString.trim().length > 3 &&
+      priceWatch > 0 &&
+      marketplaces.length > 0
+    ),
+    distinctUntilChanged((previous, current) =>
+      previous.priceWatch === current.priceWatch &&
+      previous.queryString === current.queryString &&
+      isEqual(previous.marketplaces.sort(), current.marketplaces.sort())
+    ),
     tap(() => (loading = true)),
     switchMap(({ queryString, priceWatch, marketplaces }) => {
       const request = new Request(resolvedEnv['PreviewEndpoint'], {
         method: 'POST',
         body: JSON.stringify({ query: queryString, price: priceWatch, marketplaceIds: marketplaces }),
-        headers: { 'Content-Type': 'text/plain' }
+        headers: {
+          'Content-Type': 'text/plain'
+        }
       });
       return fromFetch(request);
     }),
     switchMap(response => response.json()),
-    tap(() => (loading = false)),
-    startWith([])
+    tap(() => (loading = false))
   );
 
   $: stage = stages[stageIndex];
@@ -128,6 +139,30 @@
     background-image: url('/search-bg.jpg');
     background-size: cover;
     background-attachment: fixed;
+  }
+
+  .preview-card {
+    width: 46%;
+    margin: 4%;
+    height: 94%;
+  }
+
+  @media (min-width:600px)  {
+    .preview-card {
+      width: 30%;
+      margin: 1.55%;
+    }
+  }
+
+  .arrow-up {
+    width: 60px;
+    height: 30px;
+    border-left: solid 30px transparent;
+    border-right: solid 30px transparent;
+    border-bottom: solid 30px rgb(30 41 59);
+    position: absolute;
+    top: -30px;
+    left: calc(50% - 30px);
   }
 </style>
 
@@ -153,7 +188,7 @@
                 options={input?.options}
                 placeholder={input?.placeholder}
                 initialValue={$responses[input.name]}
-                on:valueChanged={e => $responses[input.name] = e.detail.value}>
+                on:valueChanged={e => updateResponseByName(input.name, e.detail.value)}>
               </Input>
             </div>
           {/each}
@@ -167,7 +202,7 @@
         <div class="mx-auto pt-3">
           <MarketPlaceList selectable floatDirection='left'
             selectedMarketplaces={$responses.marketplaces}
-            on:valueChanged={e => updateSelectedMarketplaces(e)}></MarketPlaceList>
+            on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}></MarketPlaceList>
           <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center text-white
               p-2 pt-4 bg-black relative">
             ...More coming soon!
@@ -176,17 +211,29 @@
       {/if}
     </div>
   {/key}
-  <div class="w-full p-5 mt-4 overflow-x-hidden flex items-stretch">
-    {#each $previewResults as result}
-      <div class="p-3 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center w-1/2 md:w-1/3 lg:w-1/4 float-left mx-3 hover:scale-110 transition-transform duration-100">
-        <a href={result.url} target="_blank" rel="noreferrer">
-          {#if result.imageUrl}
-            <img class="w-full rounded" src={result.imageUrl} alt={result.name}>
-          {/if}
-          <h3 class="text-lg text-slate-400">{result.name}</h3>
-          <h2 class="text-3xl my-2">${result.price ?? 0}</h2>
-        </a>
+  <div class="w-full p-5 mt-4 h-[40%] overflow-y-scroll">
+    {#if !$previewResults}
+      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative">
+        <div class="arrow-up border-slate-800"></div>
+        <span class="text-slate-300 text-lg">Type a query, set a price and select at least one marketplace to see a preview</span>
       </div>
-    {/each}
+    {:else if loading}
+      <div class="w-full h-full flex items-center justify-center">
+        <i class="text-3xl fa fa-circle-notch fa-spin"></i>
+      </div>
+    {:else}
+      {#each $previewResults as result, i}
+        <div class="preview-card p-3 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center float-left mx-3 hover:scale-110 transition-transform duration-100"
+          in:fly={{ y: 25, duration: 500, delay: i * 150 }}>
+          <a href={result.url} target="_blank" rel="noreferrer">
+            {#if result.imageUrl}
+              <img class="w-full mb-2 rounded" src={result.imageUrl} alt={result.name}>
+            {/if}
+            <h3 class="text-lg text-slate-400">{result.name}</h3>
+            <h2 class="text-3xl my-2">${result.price ?? 0}</h2>
+          </a>
+        </div>
+      {/each}
+    {/if}
   </div>
 </section>
