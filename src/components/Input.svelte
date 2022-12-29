@@ -51,7 +51,7 @@
       {/if}
     </button>
     {#if options.length > 1 && expanded}
-      <div class="absolute bg-slate-800 text-slate-200 right-0 rounded-b overflow-hidden" style="top: 100%;" 
+      <div class="absolute bg-slate-800 text-slate-200 right-0 rounded-b overflow-hidden z-10" style="top: 100%;" 
         role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1"
         in:fly={{ y: -15, duration: 200 }}>
         {#each options as option}

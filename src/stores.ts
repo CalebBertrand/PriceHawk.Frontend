@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 
-import type { MarketPlaceIds } from './marketplace-ids';
+import { MarketPlaceIds } from './marketplace-ids';
 
 export type Responses = {
     queryString: string | null;
@@ -18,6 +18,6 @@ export const responses: BehaviorSubject<Responses> = new BehaviorSubject({
     priceWatch: null,
     timeRange: 14,
     timeUnit: 'days',
-    marketplaces: [],
+    marketplaces: [MarketPlaceIds.Steam],
     contact: null
 });

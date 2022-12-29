@@ -16,7 +16,7 @@
     background-size: cover;
     background-attachment: fixed;
 
-    .shadow {
+    .bottom-shadow {
       position: absolute;
       bottom: 0;
       left: 0;
@@ -44,6 +44,6 @@
       <MarketPlaceList floatDirection='right'></MarketPlaceList>
     </div>
   </div>
-  <div class="shadow"></div>
+  <div class="bottom-shadow"></div>
   <div class="bg-black text-slate-300 absolute bottom-0 right-0 p-3">Image By Freepik</div>
 </section>

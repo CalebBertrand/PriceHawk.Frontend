@@ -139,12 +139,21 @@
     background-image: url('/search-bg.jpg');
     background-size: cover;
     background-attachment: fixed;
+    padding: 12vh 0 0 0;
+  }
+
+  .input-block {
+    min-height: 35vh;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    justify-items: end;
   }
 
   .preview-card {
     width: 46%;
-    margin: 4%;
-    height: 94%;
+    margin: 2%;
+    height: 20rem;
   }
 
   @media (min-width:600px)  {
@@ -164,6 +173,15 @@
     top: -30px;
     left: calc(50% - 30px);
   }
+
+  .bottom-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 15vh;
+    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.45));
+  }
 </style>
 
 <section id="search" class="h-screen flex flex-col justify-center relative">
@@ -177,10 +195,12 @@
     </div>
   {/if}
   {#key stageIndex}
-    <div class="text-center w-full" in:fly={{ y: -25, duration: 500 }}>
-      <Header text={stage.header}></Header>
+    <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
+      <div class="order-2 px-4">
+        <Header text={stage.header}></Header>
+      </div>
       {#if !isNil(stage.inputs)}
-        <div class="mt-3 mx-auto w-4/5 w-md-3/4 flex flex-row items-stretch justify-items-stretch">
+        <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-1 flex flex-row items-stretch justify-items-stretch">
           {#each stage.inputs as input, index}
             <div class:flex-grow={input.main}>
               <Input type={input.type}
@@ -211,15 +231,22 @@
       {/if}
     </div>
   {/key}
-  <div class="w-full p-5 mt-4 h-[40%] overflow-y-scroll">
-    {#if !$previewResults}
-      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative">
+  <div class="w-full py-5 px-[5%] mt-4 h-full overflow-y-scroll">
+    {#if loading}
+      <div class="w-full text-center mt-6">
+        <i class="text-4xl fa fa-circle-notch fa-spin"></i>
+      </div>
+    {:else if !$previewResults}
+      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+        in:fly={{ y: -25, duration: 500 }}>
         <div class="arrow-up border-slate-800"></div>
         <span class="text-slate-300 text-lg">Type a query, set a price and select at least one marketplace to see a preview</span>
       </div>
-    {:else if loading}
-      <div class="w-full h-full flex items-center justify-center">
-        <i class="text-3xl fa fa-circle-notch fa-spin"></i>
+    {:else if !$previewResults.length}
+      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+      in:fly={{ y: -25, duration: 500 }}>
+        <div class="arrow-up border-slate-800"></div>
+        <span class="text-slate-300 text-lg">Your query or price threshold may be too narrow</span>
       </div>
     {:else}
       {#each $previewResults as result, i}
@@ -236,4 +263,5 @@
       {/each}
     {/if}
   </div>
+  <div class="bottom-shadow"></div>
 </section>
