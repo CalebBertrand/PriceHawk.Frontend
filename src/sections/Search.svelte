@@ -152,14 +152,14 @@
 
   .preview-card {
     width: 46%;
-    margin: 2%;
-    height: 20rem;
+    margin: 0 2% 5vh 2%;
+    height: 40vh;
   }
 
   @media (min-width:600px)  {
     .preview-card {
       width: 30%;
-      margin: 1.55%;
+      margin: 0 1.55% 5vh 1.55%;
     }
   }
 
@@ -179,8 +179,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 15vh;
-    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.45));
+    height: 8vh;
+    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.35));
   }
 </style>
 
