@@ -17,22 +17,9 @@
   }
 </script>
 
-<Popup header="Notice!" 
-  text="This site is still in development. Feel free to poke around, but don't 
-  expect full functionality. A beta release is planned for January 2023!"
-  displayed={!watchToCancelId}>
-</Popup>
-
 <Popup header="Watch Cancelled" 
-  text="Thanks for chosing PriceHawk. Please note that PriceHawk is still under development. If you have feedback, you can reach me through the button below."
+  text="Thanks for chosing PriceHawk!"
   displayed={!!watchToCancelId}>
-  <div class="text-center mt-12">
-    <Button color='white' applyClass='rounded-lg shadow-lg'
-      size='lg'
-      callBack={() => window.open('https://www.linkedin.com/in/caleb-bertrand/', '_blank')}>
-      Contact Developer
-    </Button>
-  </div>
 </Popup>
 
 <Hero></Hero>

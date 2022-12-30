@@ -188,8 +188,8 @@
   </div>
 
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
-    text="Twice a day, PriceHawk will search for products on [insert supported stores here... still in development!] that match the parameters you set here. 
-    When a match is found, an email or text message is sent to notify you."
+    text="At least twice a day, PriceHawk searches for products on Steam that match the parameters you set here. 
+    When a match is found, an email is sent to notify you."
     bind:displayed={howItWorksPopup}>
   </Popup>
 

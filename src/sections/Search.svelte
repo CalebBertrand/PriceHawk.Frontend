@@ -37,7 +37,7 @@
       ]
     },
     {
-      header: "For <em>How Much</em> Would You Buy It?",
+      header: "<em>How Much</em> Is The Highest You'd Pay?",
       inputs: [
         {
           name: 'currency',
@@ -55,7 +55,7 @@
       ]
     },
     {
-      header: "<em>What Email</em> Should Recieve Price Notifications?",
+      header: "<em>Which</em> Email Should Recieve Price Notifications?",
       inputs: [
         {
           name: "contact",
