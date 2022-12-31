@@ -8,6 +8,7 @@ export const MarketPlaceConfigs = [
     },
     {
         id: MarketPlaceIds.Amazon,
-        name: 'Amazon'
+        name: 'Amazon',
+        imageUrl: '/amazon_logo_white_small.png'
     }
 ];

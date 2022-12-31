@@ -17,11 +17,6 @@
   }
 </script>
 
-<Popup header="Notice!" 
-  text="This site is still in development."
-  displayed={!watchToCancelId}>
-</Popup>
-
 <Popup header="Watch Cancelled" 
   text="Thanks for chosing PriceHawk!"
   displayed={!!watchToCancelId}>

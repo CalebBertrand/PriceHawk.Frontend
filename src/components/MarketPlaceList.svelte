@@ -36,7 +36,7 @@
     {/if}
     {#if marketplace.imageUrl}
       <div class="bg-contain bg-no-repeat bg-center w-full h-full"
-        style={`background-image: url("${marketplace.imageUrl}");`}>
+        style={`background-image: url("${marketplace.imageUrl}"); background-size: 80%;`}>
       </div>
     {:else}
       <div class="w-full h-full flex items-center">
