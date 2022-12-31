@@ -155,12 +155,20 @@
     margin: 0 2% 5vh 2%;
     height: 40vh;
   }
-
-  @media (min-width:600px)  {
+  @media (min-width: 750px)  {
     .preview-card {
       width: 30%;
       margin: 0 1.55% 5vh 1.55%;
     }
+  }
+  .preview-card img {
+    max-height: 20vh;
+  }
+  .preview-card h3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
   }
 
   .arrow-up {
@@ -254,7 +262,7 @@
           in:fly={{ y: 25, duration: 500, delay: i * 150 }}>
           <a href={result.url} target="_blank" rel="noreferrer">
             {#if result.imageUrl}
-              <img class="w-full mb-2 rounded" src={result.imageUrl} alt={result.name}>
+              <img class="mx-auto mb-2 rounded" src={result.imageUrl} alt={result.name}>
             {/if}
             <h3 class="text-lg text-slate-400">{result.name}</h3>
             <h2 class="text-3xl my-2">${result.price ?? 0}</h2>

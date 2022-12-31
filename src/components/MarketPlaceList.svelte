@@ -34,8 +34,14 @@
         {/if}
       </div>
     {/if}
-    <div class="bg-contain bg-no-repeat bg-center w-full h-full"
-      style={`background-image: url("${marketplace.imageUrl}");`}>
-    </div>
+    {#if marketplace.imageUrl}
+      <div class="bg-contain bg-no-repeat bg-center w-full h-full"
+        style={`background-image: url("${marketplace.imageUrl}");`}>
+      </div>
+    {:else}
+      <div class="w-full h-full flex items-center">
+         <span class="w-full block text-center text-slate-100 font-semibold text-2xl">{marketplace.name}</span>
+      </div>
+    {/if}
   </div>
 {/each}
