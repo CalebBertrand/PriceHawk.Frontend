@@ -22,7 +22,7 @@
 {#each MarketPlaceConfigs as marketplace, index}
   {@const isSelected = selectedMarketplaces.includes(marketplace.id)}
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <div class="float-{floatDirection} w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center
+  <div class="float-{floatDirection} w-28 h-28 sm:h-36 sm:w-36 rounded-lg shadow-lg m-2 flex align-middle justify-center
     p-2 bg-black relative {selectable && 'focus:scale-110 hover:scale-110 transition-transform duration-100 hover:bg-slate-900 cursor-pointer'}"
     tabindex={selectable ? index : -1}
     on:click={() => toggleMarketplace(marketplace.id)} on:keydown={e => e.key === 'Enter' && toggleMarketplace(marketplace.id)}>
@@ -40,7 +40,9 @@
       </div>
     {:else}
       <div class="w-full h-full flex items-center">
-         <span class="w-full block text-center text-slate-100 font-semibold text-2xl">{marketplace.name}</span>
+        <span class="w-full block text-center text-slate-100 font-semibold text-xl sm:text-2xl">
+          {marketplace.name}
+        </span>
       </div>
     {/if}
   </div>

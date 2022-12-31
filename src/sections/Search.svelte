@@ -222,19 +222,16 @@
           {/each}
           <Button color="red"
             applyClass="rounded-r-lg text-xl px-5 py-4"
-            callBack={() => next()}>
+            callBack={next}>
             Next
           </Button>
         </div>
       {:else}
-        <div class="mx-auto pt-3">
+        <div class="mx-auto pt-3 px-3">
           <MarketPlaceList selectable floatDirection='left'
             selectedMarketplaces={$responses.marketplaces}
-            on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}></MarketPlaceList>
-          <div class="float-left w-36 h-36 rounded-lg shadow-lg m-2 flex align-middle justify-center text-white
-              p-2 pt-4 bg-black relative">
-            ...More coming soon!
-          </div>
+            on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}>
+          </MarketPlaceList>
         </div>
       {/if}
     </div>
