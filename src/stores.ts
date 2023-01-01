@@ -18,6 +18,6 @@ export const responses: BehaviorSubject<Responses> = new BehaviorSubject({
     priceWatch: null,
     timeRange: 14,
     timeUnit: 'days',
-    marketplaces: [MarketPlaceIds.Steam],
+    marketplaces: [MarketPlaceIds.Amazon],
     contact: null
 });
