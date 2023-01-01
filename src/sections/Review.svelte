@@ -178,15 +178,6 @@
       </Button>
     </div>
     <div class="md:w-1/2 py-8">
-      <ins class="adsbygoogle float-right"
-          style="display:block"
-          data-ad-client="ca-pub-7152148528734124"
-          data-ad-slot="6088146685"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
     </div>
   </div>
 
