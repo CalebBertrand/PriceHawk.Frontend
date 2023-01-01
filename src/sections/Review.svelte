@@ -27,6 +27,7 @@
   let sent = false;
   let sentVerification = false;
   let errorMessage = '';
+  let lastQuery = '';
 
   function updateVerificationCode(code: number) {
     verificationCode = code;
@@ -78,6 +79,8 @@
           const newResponse = clone($responses);
           newResponse.marketplaces = [];
           newResponse.priceWatch = null;
+
+          lastQuery = newResponse.queryString;
           newResponse.queryString = '';
           responses.next(newResponse);
 
@@ -228,7 +231,9 @@
     </div>
   </Popup>
 
-  <Popup header='Success! You will now recieve price notifications.' 
-    bind:displayed={sent} text='A check will be made for your query immediately, and twice a day from now on.'>
+  <Popup header='Success! You will now recieve price notification emails."' 
+    bind:displayed={sent} 
+    text='A check will be made for your query "{lastQuery}" immediately, and at least twice a day for the next {$responses.timeRange} {$responses.timeUnit}. 
+      To cancel the watch, click "Finish Watch" in any of the emails.'>
   </Popup>
 </section>
