@@ -4,10 +4,11 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { responses } from '../stores';
-  import { clamp, clone, isEqual, isNil, set } from 'lodash-es';
+  import { clamp, clone, isNil, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
   import { switchMap, filter, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+  import { areSetEqual } from '../set-equals';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
 
@@ -115,7 +116,7 @@
     distinctUntilChanged((previous, current) =>
       previous.priceWatch === current.priceWatch &&
       previous.queryString === current.queryString &&
-      isEqual(previous.marketplaces.sort(), current.marketplaces.sort())
+      areSetEqual(previous.marketplaces, current.marketplaces)
     ),
     tap(() => (loading = true)),
     switchMap(({ queryString, priceWatch, marketplaces }) => {
