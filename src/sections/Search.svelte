@@ -7,10 +7,10 @@
   import { clamp, clone, isNil, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
-  import { switchMap, filter, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-  import { areSetEqual } from '../set-equals';
+  import { switchMap, filter, tap, debounceTime } from 'rxjs/operators';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
+  import { MarketPlaceConfigs } from '../marketplace-configs';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
 
@@ -113,11 +113,6 @@
       priceWatch > 0 &&
       marketplaces.length > 0
     ),
-    distinctUntilChanged((previous, current) =>
-      previous.priceWatch === current.priceWatch &&
-      previous.queryString === current.queryString &&
-      areSetEqual(previous.marketplaces, current.marketplaces)
-    ),
     tap(() => (loading = true)),
     switchMap(({ queryString, priceWatch, marketplaces }) => {
       const request = new Request(resolvedEnv['PreviewEndpoint'], {
@@ -163,7 +158,7 @@
     }
   }
   .preview-card img {
-    max-height: 20vh;
+    max-height: 18vh;
   }
   .preview-card h3 {
     display: -webkit-box;
@@ -256,8 +251,12 @@
       </div>
     {:else}
       {#each $previewResults as result, i}
-        <div class="preview-card p-3 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center float-left mx-3 hover:scale-110 transition-transform duration-100"
+        {@const marketplaceName = MarketPlaceConfigs.find(({ id }) => id === result.marketplaceId)?.name}
+        <div class="preview-card px-3 py-2 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center float-left mx-3 hover:scale-110 transition-transform duration-100"
           in:fly={{ y: 25, duration: 500, delay: i * 150 }}>
+          {#if marketplaceName}
+            <div class="h-4 w-full text-right text-sm mb-3">{marketplaceName}</div>
+          {/if}
           <a href={result.url} target="_blank" rel="noreferrer">
             {#if result.imageUrl}
               <img class="mx-auto mb-2 rounded" src={result.imageUrl} alt={result.name}>

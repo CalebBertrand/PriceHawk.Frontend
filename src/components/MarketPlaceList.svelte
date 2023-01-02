@@ -8,14 +8,12 @@
   export let selectedMarketplaces: number[] = [];
 
   function toggleMarketplace(marketplaceId) {
-    if (selectedMarketplaces.includes(marketplaceId))
-      selectedMarketplaces = selectedMarketplaces.filter(id => id !== marketplaceId);
-    else
-      selectedMarketplaces = [...selectedMarketplaces, marketplaceId];
-
+    selectedMarketplaces = selectedMarketplaces.includes(marketplaceId)
+      ? selectedMarketplaces.filter(id => id !== marketplaceId)
+      : [...selectedMarketplaces, marketplaceId];
     valuesChangedDispatcher('valueChanged', {
       value: selectedMarketplaces
-    })
+    });
   }
 </script>
 
