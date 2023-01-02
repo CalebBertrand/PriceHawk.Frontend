@@ -100,7 +100,7 @@
   };
 
   function updateResponseByName(name: string, value: unknown) {
-    responses.next(clone(set(responses.value, name, value)));
+    responses.next(clone(set(responses.value, name, clone(value))));
   }
 
   let loading = false;
@@ -227,7 +227,7 @@
           </Button>
         </div>
       {:else}
-        <div class="mx-auto pt-3 px-3">
+        <div class="mx-auto pt-3 px-3 overflow-y-scroll">
           <MarketPlaceList selectable floatDirection='left'
             selectedMarketplaces={$responses.marketplaces}
             on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}>

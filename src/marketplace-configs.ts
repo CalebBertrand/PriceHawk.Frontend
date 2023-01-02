@@ -8,7 +8,10 @@ export const MarketPlaceConfigs = [
     },
     {
         id: MarketPlaceIds.Amazon,
-        name: 'Amazon',
-        imageUrl: '/amazon_logo_white_small.png'
+        name: 'Amazon'
+    },
+    {
+        id: MarketPlaceIds.BestBuy,
+        name: 'BestBuy'
     }
 ];
