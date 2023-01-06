@@ -1,4 +1,4 @@
-import { MarketPlaceIds } from './marketplace-ids';
+import type { MarketPlaceIds } from './marketplace-ids';
 
 export type WatchResult = {
     name: string;

@@ -7,10 +7,11 @@
   import { clamp, clone, isNil, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
-  import { switchMap, filter, tap, debounceTime } from 'rxjs/operators';
+  import { switchMap, filter, tap, debounceTime, map, withLatestFrom } from 'rxjs/operators';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
   import { MarketPlaceConfigs } from '../marketplace-configs';
+  import type { WatchResult } from '../watch-result';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
 
@@ -124,7 +125,13 @@
       });
       return fromFetch(request);
     }),
-    switchMap(response => response.json()),
+    switchMap(response => response.json() as Promise<Array<WatchResult>>),
+    withLatestFrom(responses),
+    map(([results, { priceWatch }]) => {
+      const inPriceRange = results.filter(({ price }) => price <= priceWatch);
+      const outOfPriceRange = results.filter(({ price }) => price > priceWatch);
+      return [...inPriceRange, ...outOfPriceRange];
+    }),
     tap(() => (loading = false))
   );
 
@@ -149,11 +156,12 @@
   .preview-card {
     width: 46%;
     margin: 0 2% 5vh 2%;
-    height: 40vh;
+    height: 45vh;
   }
   @media (min-width: 750px)  {
     .preview-card {
       width: 30%;
+      height: 40vh;
       margin: 0 1.55% 5vh 1.55%;
     }
   }
@@ -252,10 +260,16 @@
     {:else}
       {#each $previewResults as result, i}
         {@const marketplaceName = MarketPlaceConfigs.find(({ id }) => id === result.marketplaceId)?.name}
+        {@const outOfPriceRange = result.price > $responses.priceWatch}
         <div class="preview-card px-3 py-2 rounded-lg shadow-lg bg-slate-800 text-slate-200 text-center float-left mx-3 hover:scale-110 transition-transform duration-100"
-          in:fly={{ y: 25, duration: 500, delay: i * 150 }}>
+          in:fly={{ y: 25, duration: 500, delay: i * 150 }} class:opacity-90={outOfPriceRange}>
           {#if marketplaceName}
-            <div class="h-4 w-full text-right text-sm mb-3">{marketplaceName}</div>
+            <div class="h-4 w-full text-right text-sm mb-3">
+              {#if outOfPriceRange}
+                <div class="float-left text-slate-300 ml-1">*Out Of Price Range</div>
+              {/if}
+              <div class="float-right">{marketplaceName}</div>
+            </div>
           {/if}
           <a href={result.url} target="_blank" rel="noreferrer">
             {#if result.imageUrl}

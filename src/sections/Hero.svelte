@@ -39,7 +39,7 @@
     </div>
   </div>
   <div class="md:w-1/2 py-8">
-    <h5 class="bg-black text-slate-300 float-right rounded p-3">Supported Stores:</h5>
+    <h5 class="bg-black text-slate-300 float-right text-lg rounded p-3">Supported Stores:</h5>
     <div class="pt-2 pl-5 clear-both">
       <MarketPlaceList floatDirection='right'></MarketPlaceList>
     </div>
