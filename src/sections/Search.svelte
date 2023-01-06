@@ -141,7 +141,7 @@
   #search {
     background-image: url('/search-bg.jpg');
     background-size: cover;
-    background-attachment: fixed;
+    background-attachment: scroll;
     padding: 12vh 0 0 0;
   }
 
@@ -159,6 +159,10 @@
     height: 45vh;
   }
   @media (min-width: 750px)  {
+    #search {
+      background-attachment: fixed;
+    }
+    
     .preview-card {
       width: 30%;
       height: 40vh;

@@ -182,8 +182,9 @@
   </div>
 
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
-    text="At least twice a day, PriceHawk searches for products on Steam that match the parameters you set here. 
-    When a match is found, an email is sent to notify you."
+    text='At least twice a day, PriceHawk searches for products that match the parameters you set here. 
+      When a match is first found, as well as when the price drops, an email is sent to you. 
+      Emails can be cancelled by clicking "Finish Watch" in any of the emails or by waiting until the end of the period you set here.'
     bind:displayed={howItWorksPopup}>
   </Popup>
 

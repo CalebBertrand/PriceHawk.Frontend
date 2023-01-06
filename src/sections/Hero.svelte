@@ -14,7 +14,7 @@
   #hero {
     background-image: url('/hero.jpg');
     background-size: cover;
-    background-attachment: fixed;
+    background-attachment: scroll;
 
     .bottom-shadow {
       position: absolute;
@@ -23,6 +23,12 @@
       right: 0;
       height: 15vh;
       background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.75));
+    }
+  }
+
+  @media (min-width: 750px)  {
+    #hero {
+      background-attachment: fixed;
     }
   }
 </style>
