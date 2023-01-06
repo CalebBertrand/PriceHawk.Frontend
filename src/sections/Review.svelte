@@ -223,7 +223,7 @@
     </div>
   </Popup>
 
-  <Popup header='Success! You will now recieve price notification emails."' 
+  <Popup header='Success! You will now recieve price notification emails.' 
     bind:displayed={sent} 
     text='A check will be made for your query "{lastQuery}" immediately, and at least twice a day for the next {$responses.timeRange} {$responses.timeUnit}. 
       To cancel the watch, click "Finish Watch" in any of the emails.'>
