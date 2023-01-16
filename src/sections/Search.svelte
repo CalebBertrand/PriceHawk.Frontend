@@ -3,8 +3,8 @@
   import Button from '../components/Button.svelte';
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
-  import { responses } from '../stores';
-  import { clamp, clone, isNil, set } from 'lodash-es';
+  import { Responses, responses } from '../stores';
+  import { clamp, clone, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
   import { switchMap, filter, tap, debounceTime, map, withLatestFrom } from 'rxjs/operators';
@@ -14,94 +14,23 @@
   import type { WatchResult } from '../watch-result';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
-
-  type StageConfig = {
-    header: string;
-    inputs?: {
-      name: string;
-      type: 'text' | 'select' | 'number' | 'email';
-      placeholder?: string | number;
-      main: boolean;
-      storedValue?: unknown;
-      options?: string[];
-    }[]
-  };
-  const stages: StageConfig[] = [
-    {
-      header: "<em>What</em> Do You Want to Buy?",
-      inputs: [
-        {
-          name: 'queryString',
-          type: 'text',
-          placeholder: 'ROG Zephyrus Duo 3070Ti',
-          main: true
-        }
-      ]
-    },
-    {
-      header: "<em>How Much</em> Is The Highest You'd Pay?",
-      inputs: [
-        {
-          name: 'currency',
-          type: 'select',
-          options: ['$'],
-          main: false
-        },
-        {
-          name: 'priceWatch',
-          type: 'number',
-          placeholder: 1200,
-          storedValue: '',
-          main: true
-        }
-      ]
-    },
-    {
-      header: "<em>Which</em> Email Should Recieve Price Notifications?",
-      inputs: [
-        {
-          name: "contact",
-          type: "email",
-          main: true,
-          placeholder: 'example@gmail.com'
-        }
-      ]
-    },
-    {
-      header: "<em>When</em> Is The Latest You Would Buy It?",
-      inputs: [
-        {
-          name: 'timeRange',
-          type: 'number',
-          placeholder: 14,
-          main: true
-        },
-        {
-          name: 'timeUnit',
-          type: 'select',
-          options: ['days', 'weeks', 'months'],
-          main: false
-        }
-      ]
-    },
-    {
-      header: "<em>Where</em> Would You Buy It?"
-    }
-  ];
   let stageIndex = 0;
+  let showAdvancedOptions = false;
+
+  let currentMustIncludeText = '';
 
   function next() {
-    if (stageIndex === stages.length - 1) {
+    if (stageIndex === 4) {
       const start = document.getElementById('review');
       start.scrollIntoView({
         behavior: 'smooth'
       });
     } else {
-      stageIndex = clamp(stageIndex + 1, 0, stages.length - 1);
+      stageIndex = clamp(stageIndex + 1, 0, 4);
     }
   };
 
-  function updateResponseByName(name: string, value: unknown) {
+  function updateResponseByName(name: keyof Responses, value: unknown) {
     responses.next(clone(set(responses.value, name, clone(value))));
   }
 
@@ -135,11 +64,16 @@
     tap(() => (loading = false))
   );
 
-  $: stage = stages[stageIndex];
+  function addMustIncludeItem(): void {
+    if (!!currentMustIncludeText && currentMustIncludeText.trim().length > 0) {
+      updateResponseByName('mustInclude', [currentMustIncludeText, ...responses.value.mustInclude]);
+      currentMustIncludeText = '';
+    }
+  }
 </script>
 <style>
   #search {
-    background-image: url('/search-bg.jpg');
+    background-image: url('/search_blurred.jpg');
     background-size: cover;
     background-attachment: scroll;
     padding: 12vh 0 0 0;
@@ -151,6 +85,11 @@
     flex-direction: column-reverse;
     align-items: stretch;
     justify-items: end;
+  }
+
+  .advanced-toggle {
+    position: absolute;
+    top: 100%;
   }
 
   .preview-card {
@@ -180,14 +119,14 @@
   }
 
   .arrow-up {
-    width: 60px;
-    height: 30px;
-    border-left: solid 30px transparent;
-    border-right: solid 30px transparent;
-    border-bottom: solid 30px rgb(30 41 59);
+    width: 50px;
+    height: 25px;
+    border-left: solid 25px transparent;
+    border-right: solid 25px transparent;
+    border-bottom: solid 25px rgb(30 41 59);
     position: absolute;
-    top: -30px;
-    left: calc(50% - 30px);
+    top: -25px;
+    left: calc(50% - 25px);
   }
 
   .bottom-shadow {
@@ -210,40 +149,157 @@
       </Button>
     </div>
   {/if}
-  {#key stageIndex}
+
+  <!-- Query String Section -->
+  {#if stageIndex === 0}
     <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
-      <div class="order-2 px-4">
-        <Header text={stage.header}></Header>
+      <div class="order-3 px-4">
+        <Header text='<em>What</em> Do You Want to Buy?'></Header>
       </div>
-      {#if !isNil(stage.inputs)}
-        <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-1 flex flex-row items-stretch justify-items-stretch">
-          {#each stage.inputs as input, index}
-            <div class:flex-grow={input.main}>
-              <Input type={input.type}
-                applyClass={index === 0 ? 'rounded-l-lg pl-3' : ''}
-                options={input?.options}
-                placeholder={input?.placeholder}
-                initialValue={$responses[input.name]}
-                on:valueChanged={e => updateResponseByName(input.name, e.detail.value)}>
-              </Input>
+      <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-2 flex flex-row items-stretch justify-items-stretch">
+        <div class="flex-grow relative">
+          <Input type='text'
+            applyClass='rounded-l-lg pl-3 relative z-10'
+            placeholder='ROG Zephyrus Duo 3070Ti'
+            on:valueChanged={e => updateResponseByName('queryString', e.detail.value)}>
+          </Input>
+
+          {#if !showAdvancedOptions}
+            <div class="advanced-toggle cursor-pointer bg-red-500 hover:bg-red-600 transition-all text-slate-200 left-5 rounded-b-md py-1 px-3 hover:scale-110 duration-100 z-0"
+              on:click={() => (showAdvancedOptions = true)} on:keydown={e => e.key === 'Enter' && (showAdvancedOptions = true)}>
+              <div class="tracking-wide">
+                Advanced Options
+              </div>
+            </div>
+          {/if}
+        </div>
+        <Button color="red"
+          applyClass="rounded-r-lg text-xl px-5 py-4"
+          callBack={next}>
+          Next
+        </Button>
+      </div>
+
+      {#if showAdvancedOptions}
+        <div class="mx-auto w-4/5 w-md-3/4 order-1">
+          <h4 class="text-lg text-left tracking-wide font-bold">Must Include:</h4>
+          <div class="float-left bg-slate-800 text-slate-200 rounded-md w-52">
+            <Input type='text'
+              applyClass='rounded-t-md py-2 w-3/4'
+              placeholder='i9'
+              on:valueChanged={e => (currentMustIncludeText = e.detail.value)}>
+            </Input>
+            <i class="fa fa-plus text-2xl cursor-pointer transition-transform hover:scale-110 duration-100"
+              on:click={() => addMustIncludeItem()} on:keydown={e => e.key === 'Enter' && addMustIncludeItem()}></i>
+          </div>
+          {#each $responses.mustInclude as mustIncludeItem}
+            <div class="float-left py-2 px-3 bg-slate-800 text-slate-200 rounded-md ml-2">
+              <h3 class="inline text-lg">{mustIncludeItem}</h3>
+              <i class="fa fa-times text-2xl ml-4 cursor-pointer transition-transform hover:scale-110 duration-100"></i>
             </div>
           {/each}
-          <Button color="red"
-            applyClass="rounded-r-lg text-xl px-5 py-4"
-            callBack={next}>
-            Next
-          </Button>
-        </div>
-      {:else}
-        <div class="mx-auto pt-3 px-3 overflow-y-scroll">
-          <MarketPlaceList selectable floatDirection='left'
-            selectedMarketplaces={$responses.marketplaces}
-            on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}>
-          </MarketPlaceList>
         </div>
       {/if}
     </div>
-  {/key}
+  {/if}
+
+  <!-- Price -->
+  {#if stageIndex === 1}
+    <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
+      <div class="order-2 px-4">
+        <Header text="<em>How Much</em> Is The Highest You'd Pay?"></Header>
+      </div>
+      <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-1 flex flex-row items-stretch justify-items-stretch">
+        <div>
+          <Input type='select'
+            applyClass='rounded-l-lg pl-3'
+            options={['$']}
+            on:valueChanged={e => updateResponseByName('currency', e.detail.value)}>
+          </Input>
+        </div>
+        <div class="flex-grow">
+          <Input type='number'
+            placeholder={1200}
+            on:valueChanged={e => updateResponseByName('priceWatch', e.detail.value)}>
+          </Input>
+        </div>
+        <Button color="red"
+          applyClass="rounded-r-lg text-xl px-5 py-4"
+          callBack={next}>
+          Next
+        </Button>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Contact -->
+  {#if stageIndex === 2}
+    <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
+      <div class="order-2 px-4">
+        <Header text='<em>Which</em> Email Should Recieve Price Notifications?'></Header>
+      </div>
+      <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-1 flex flex-row items-stretch justify-items-stretch">
+        <div class="flex-grow">
+          <Input type='email'
+            applyClass='rounded-l-lg pl-3'
+            placeholder='example@gmail.com'
+            on:valueChanged={e => updateResponseByName('contact', e.detail.value)}>
+          </Input>
+        </div>
+        <Button color="red"
+          applyClass="rounded-r-lg text-xl px-5 py-4"
+          callBack={next}>
+          Next
+        </Button>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Time Window -->
+  {#if stageIndex === 3}
+    <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
+      <div class="order-2 px-4">
+        <Header text="<em>When</em> Is The Latest You Would Buy It?"></Header>
+      </div>
+      <div class="mt-3 mx-auto w-4/5 w-md-3/4 order-1 flex flex-row items-stretch justify-items-stretch">
+        <div class="flex-grow">
+          <Input type='number'
+            applyClass='rounded-l-lg pl-3'
+            placeholder={14}
+            on:valueChanged={e => updateResponseByName('timeRange', e.detail.value)}>
+          </Input>
+        </div>
+        <div>
+          <Input type='select'
+            placeholder={1200}
+            options={['days', 'weeks', 'months']}
+            on:valueChanged={e => updateResponseByName('timeUnit', e.detail.value)}>
+          </Input>
+        </div>
+        <Button color="red"
+          applyClass="rounded-r-lg text-xl px-5 py-4"
+          callBack={next}>
+          Next
+        </Button>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Marketplaces -->
+  {#if stageIndex === 4}
+    <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
+      <div class="order-2 px-4">
+        <Header text='<em>Where</em> Would You Buy It?'></Header>
+      </div>
+      <div class="mx-auto pt-3 px-3">
+        <MarketPlaceList selectable floatDirection='left'
+          selectedMarketplaces={$responses.marketplaces}
+          on:valueChanged={e => updateResponseByName('marketplaces', e.detail.value)}>
+        </MarketPlaceList>
+      </div>
+    </div>
+  {/if}
+
   <div class="w-full py-5 px-[5%] mt-4 h-full overflow-y-scroll">
     {#if loading}
       <div class="w-full text-center mt-6">

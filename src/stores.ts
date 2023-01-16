@@ -10,6 +10,7 @@ export type Responses = {
     timeUnit: 'days' | 'weeks' | 'months' | null;
     marketplaces: Array<MarketPlaceIds>;
     contact: string;
+    mustInclude: Array<string>;
 }
 
 export const responses: BehaviorSubject<Responses> = new BehaviorSubject({
@@ -19,5 +20,6 @@ export const responses: BehaviorSubject<Responses> = new BehaviorSubject({
     timeRange: 14,
     timeUnit: 'days',
     marketplaces: [MarketPlaceIds.Amazon],
-    contact: null
+    contact: null,
+    mustInclude: []
 });

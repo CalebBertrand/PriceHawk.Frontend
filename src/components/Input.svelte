@@ -17,7 +17,7 @@
     : null;
   let expanded = false;
 
-  function valueChanged(selectedValue) {
+  function valueChanged(selectedValue: unknown): void {
     if (type === 'select') selected = selectedValue;
 
     dispatchValueChanged('valueChanged', {

@@ -5,6 +5,7 @@ export type OutgoingWatch = {
     query: string;
     price: number;
     marketplaceIds: Array<MarketPlaceIds>;
+    mustInclude: Array<string>;
     captchaToken: string;
     dayCount: number;
     verificationCode: number;

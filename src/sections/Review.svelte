@@ -50,7 +50,7 @@
     loading = true;
     grecaptcha.ready(async () => {
       const token = await grecaptcha.execute('6Lc_a0wjAAAAAGXhTfV5G075dnJBkjUK61NcAZf0', { action: 'submit' });
-      const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces } = $responses;
+      const { contact, queryString, priceWatch, timeRange, timeUnit, marketplaces, mustInclude } = $responses;
       const dayCount = timeRange * timeUnitsToDays[timeUnit];
       const request: OutgoingWatch = {
         contact: contact,
@@ -59,6 +59,7 @@
         dayCount: dayCount,
         captchaToken: token,
         marketplaceIds: marketplaces,
+        mustInclude: mustInclude,
         verificationCode: +verificationCode
       };
 
