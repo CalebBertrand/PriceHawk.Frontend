@@ -4,14 +4,15 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { Responses, responses } from '../stores';
-  import { clamp, clone, set } from 'lodash-es';
+  import { clamp, clone, isEqual, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
-  import { switchMap, filter, tap, debounceTime, map, withLatestFrom } from 'rxjs/operators';
+  import { switchMap, filter, tap, debounceTime, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { WatchResult } from '../watch-result';
+  import type { OutgoingWatch } from 'src/outgoing-watch';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
   let stageIndex = 0;
@@ -34,6 +35,15 @@
     responses.next(clone(set(responses.value, name, clone(value))));
   }
 
+  function getPreviewParams(req: Responses) {
+    return {
+      marketplaces: req.marketplaces,
+      queryString: req.queryString,
+      priceWatch: req.priceWatch,
+      mustInclude: req.mustInclude,
+    };
+  }
+
   let loading = false;
   const previewResults = responses.pipe(
     debounceTime(800),
@@ -43,11 +53,17 @@
       priceWatch > 0 &&
       marketplaces.length > 0
     ),
+    distinctUntilChanged((r1, r2) => isEqual(getPreviewParams(r1), getPreviewParams(r2))),
     tap(() => (loading = true)),
-    switchMap(({ queryString, priceWatch, marketplaces }) => {
+    switchMap(({ queryString, priceWatch, marketplaces, mustInclude }) => {
       const request = new Request(resolvedEnv['PreviewEndpoint'], {
         method: 'POST',
-        body: JSON.stringify({ query: queryString, price: priceWatch, marketplaceIds: marketplaces }),
+        body: JSON.stringify({
+          query: queryString,
+          price: priceWatch,
+          marketplaceIds: marketplaces,
+          mustInclude: mustInclude
+        }),
         headers: {
           'Content-Type': 'text/plain'
         }
@@ -67,16 +83,16 @@
   function addMustIncludeItem(): void {
     if (!!currentMustIncludeText && currentMustIncludeText.trim().length > 0) {
       updateResponseByName('mustInclude', [currentMustIncludeText, ...responses.value.mustInclude]);
-      currentMustIncludeText = '';
     }
+  }
+  function removeMustIncludeItem(mustIncludeItem: string): void {
+    updateResponseByName('mustInclude', responses.value.mustInclude.filter(item => item !== mustIncludeItem));
   }
 </script>
 <style>
   #search {
-    background-image: url('/search_blurred.jpg');
-    background-size: cover;
-    background-attachment: scroll;
     padding: 12vh 0 0 0;
+    background: radial-gradient(#ff1b1b96 10%, #dfdfdf 100%);
   }
 
   .input-block {
@@ -98,10 +114,6 @@
     height: 45vh;
   }
   @media (min-width: 750px)  {
-    #search {
-      background-attachment: fixed;
-    }
-    
     .preview-card {
       width: 30%;
       height: 40vh;
@@ -128,15 +140,6 @@
     top: -25px;
     left: calc(50% - 25px);
   }
-
-  .bottom-shadow {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 8vh;
-    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.35));
-  }
 </style>
 
 <section id="search" class="h-screen flex flex-col justify-center relative">
@@ -161,6 +164,7 @@
           <Input type='text'
             applyClass='rounded-l-lg pl-3 relative z-10'
             placeholder='ROG Zephyrus Duo 3070Ti'
+            initialValue={$responses.queryString}
             on:valueChanged={e => updateResponseByName('queryString', e.detail.value)}>
           </Input>
 
@@ -182,20 +186,24 @@
 
       {#if showAdvancedOptions}
         <div class="mx-auto w-4/5 w-md-3/4 order-1">
-          <h4 class="text-lg text-left tracking-wide font-bold">Must Include:</h4>
-          <div class="float-left bg-slate-800 text-slate-200 rounded-md w-52">
-            <Input type='text'
-              applyClass='rounded-t-md py-2 w-3/4'
-              placeholder='i9'
-              on:valueChanged={e => (currentMustIncludeText = e.detail.value)}>
-            </Input>
-            <i class="fa fa-plus text-2xl cursor-pointer transition-transform hover:scale-110 duration-100"
-              on:click={() => addMustIncludeItem()} on:keydown={e => e.key === 'Enter' && addMustIncludeItem()}></i>
-          </div>
+          <h4 class="text-lg mt-2 text-left tracking-wide font-bold">Must Include:</h4>
+          {#if $responses.mustInclude.length < 3}
+            <div class="float-left bg-slate-800 text-slate-200 rounded-md w-52 h-11">
+              <Input type='text'
+                applyClass='rounded-t-md py-2 w-3/4 text-md md:text-lg'
+                placeholder='Must Include...'
+                on:valueChanged={e => (currentMustIncludeText = e.detail.value)}>
+              </Input>
+              <div class="float-right bg-red-500 hover:bg-red-600 w-12 h-full cursor-pointer rounded-r-md flex items-center justify-center" 
+                on:click={() => addMustIncludeItem()} on:keydown={e => e.key === 'Enter' && addMustIncludeItem()}>
+                <i class="fa fa-plus text-2xl"></i>
+              </div>
+            </div>
+          {/if}
           {#each $responses.mustInclude as mustIncludeItem}
-            <div class="float-left py-2 px-3 bg-slate-800 text-slate-200 rounded-md ml-2">
+            <div class="float-left py-2 px-3 bg-slate-800 text-slate-200 rounded-md ml-2 h-11">
               <h3 class="inline text-lg">{mustIncludeItem}</h3>
-              <i class="fa fa-times text-2xl ml-4 cursor-pointer transition-transform hover:scale-110 duration-100"></i>
+              <i on:click={() => removeMustIncludeItem(mustIncludeItem)} on:keydown={e => e.key === 'Enter' && removeMustIncludeItem(mustIncludeItem)} class="fa fa-times text-2xl ml-4 cursor-pointer"></i>
             </div>
           {/each}
         </div>
@@ -220,6 +228,7 @@
         <div class="flex-grow">
           <Input type='number'
             placeholder={1200}
+            initialValue={$responses.priceWatch}
             on:valueChanged={e => updateResponseByName('priceWatch', e.detail.value)}>
           </Input>
         </div>
@@ -243,6 +252,7 @@
           <Input type='email'
             applyClass='rounded-l-lg pl-3'
             placeholder='example@gmail.com'
+            initialValue={$responses.contact}
             on:valueChanged={e => updateResponseByName('contact', e.detail.value)}>
           </Input>
         </div>
@@ -266,6 +276,7 @@
           <Input type='number'
             applyClass='rounded-l-lg pl-3'
             placeholder={14}
+            initialValue={$responses.timeRange}
             on:valueChanged={e => updateResponseByName('timeRange', e.detail.value)}>
           </Input>
         </div>
@@ -273,6 +284,7 @@
           <Input type='select'
             placeholder={1200}
             options={['days', 'weeks', 'months']}
+            initialValue={$responses.timeUnit}
             on:valueChanged={e => updateResponseByName('timeUnit', e.detail.value)}>
           </Input>
         </div>
@@ -300,22 +312,22 @@
     </div>
   {/if}
 
-  <div class="w-full py-5 px-[5%] mt-4 h-full overflow-y-scroll">
+  <div class="w-full pt-8 pb-5 px-[5%] mt-12 h-full overflow-y-scroll">
     {#if loading}
       <div class="w-full text-center mt-6">
         <i class="text-4xl fa fa-circle-notch fa-spin"></i>
       </div>
     {:else if !$previewResults}
-      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+      <div class="bg-slate-800 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
         in:fly={{ y: -25, duration: 500 }}>
         <div class="arrow-up border-slate-800"></div>
-        <span class="text-slate-300 text-lg">Type a query, set a price and select at least one marketplace to see a preview</span>
+        <span class="text-slate-300 text-lg">Type a search, set a price and select at least one marketplace to see a preview</span>
       </div>
     {:else if !$previewResults.length}
-      <div class="bg-slate-800 px-5 py-2 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+      <div class="bg-slate-800 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
       in:fly={{ y: -25, duration: 500 }}>
         <div class="arrow-up border-slate-800"></div>
-        <span class="text-slate-300 text-lg">Your query or price threshold may be too narrow</span>
+        <span class="text-slate-300 text-lg">Your search or price threshold may be too narrow</span>
       </div>
     {:else}
       {#each $previewResults as result, i}
@@ -342,5 +354,4 @@
       {/each}
     {/if}
   </div>
-  <div class="bottom-shadow"></div>
 </section>
