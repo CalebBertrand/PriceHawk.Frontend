@@ -7,12 +7,11 @@
   import { clamp, clone, isEqual, set } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
-  import { switchMap, filter, tap, debounceTime, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
+  import { switchMap, filter, tap, debounceTime, map, withLatestFrom, distinctUntilChanged, catchError } from 'rxjs/operators';
   import 'isomorphic-fetch';
   import env from '../../environment.json';
   import { MarketPlaceConfigs } from '../marketplace-configs';
   import type { WatchResult } from '../watch-result';
-  import type { OutgoingWatch } from 'src/outgoing-watch';
 
   const resolvedEnv = window.location.hostname.includes('localhost') ? env['Local'] : env['Production'];
   let stageIndex = 0;
@@ -32,7 +31,7 @@
   };
 
   function updateResponseByName(name: keyof Responses, value: unknown) {
-    responses.next(clone(set(responses.value, name, clone(value))));
+    responses.next(set(clone(responses.value), name, clone(value)));
   }
 
   function getPreviewParams(req: Responses) {
@@ -53,8 +52,14 @@
       priceWatch > 0 &&
       marketplaces.length > 0
     ),
-    distinctUntilChanged((r1, r2) => isEqual(getPreviewParams(r1), getPreviewParams(r2))),
-    tap(() => (loading = true)),
+    distinctUntilChanged((r1, r2) => {
+      console.log(r1, r2);
+      return isEqual(getPreviewParams(r1), getPreviewParams(r2));
+    }),
+    tap(() => {
+      loading = true;
+      console.log('loading...');
+    }),
     switchMap(({ queryString, priceWatch, marketplaces, mustInclude }) => {
       const request = new Request(resolvedEnv['PreviewEndpoint'], {
         method: 'POST',
@@ -73,6 +78,7 @@
     switchMap(response => response.json() as Promise<Array<WatchResult>>),
     withLatestFrom(responses),
     map(([results, { priceWatch }]) => {
+      // Put the ones out of range at the bottom
       const inPriceRange = results.filter(({ price }) => price <= priceWatch);
       const outOfPriceRange = results.filter(({ price }) => price > priceWatch);
       return [...inPriceRange, ...outOfPriceRange];
@@ -92,7 +98,7 @@
 <style>
   #search {
     padding: 12vh 0 0 0;
-    background: radial-gradient(#ff1b1b96 10%, #dfdfdf 100%);
+    /* background: radial-gradient(#ff1b1b96 10%, #dfdfdf 100%); */
   }
 
   .input-block {
@@ -142,7 +148,7 @@
   }
 </style>
 
-<section id="search" class="h-screen flex flex-col justify-center relative">
+<section id="search" class="h-screen flex flex-col justify-center relative bg-gradient-to-tr from-violet-400 to-red-500">
   {#if stageIndex !== 0}
     <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"
