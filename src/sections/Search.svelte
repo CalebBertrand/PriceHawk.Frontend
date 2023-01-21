@@ -214,7 +214,7 @@
             </div>
           {/if}
           {#each $responses.mustInclude as mustIncludeItem}
-            <div class="float-left py-2 px-3 bg-slate-800 text-slate-200 rounded-md ml-2 h-11">
+            <div class="float-left py-2 px-3 bg-slate-800 text-slate-200 rounded-md ml-2 h-11" in:fade={{ duration: 200 }}>
               <h3 class="inline text-lg">{mustIncludeItem}</h3>
               <i on:click={() => removeMustIncludeItem(mustIncludeItem)} on:keydown={e => e.key === 'Enter' && removeMustIncludeItem(mustIncludeItem)} class="fa fa-times text-2xl ml-4 cursor-pointer"></i>
             </div>
