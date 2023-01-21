@@ -83,7 +83,13 @@
       const outOfPriceRange = results.filter(({ price }) => price > priceWatch);
       return [...inPriceRange, ...outOfPriceRange];
     }),
-    tap(() => (loading = false))
+    tap(() => {
+      loading = false;
+
+      // Avoid jerking the scroll to the bottom of the search section
+      const scrollPos = window.scrollY;
+      setTimeout(() => window.scrollTo({ top: scrollPos }));
+    })
   );
 
   function addMustIncludeItem(): void {
@@ -98,6 +104,7 @@
 <style>
   #search {
     padding: 12vh 0 0 0;
+    min-height: 100vh;
     /* background: radial-gradient(#ff1b1b96 10%, #dfdfdf 100%); */
   }
 
@@ -148,7 +155,7 @@
   }
 </style>
 
-<section id="search" class="h-screen flex flex-col justify-center relative bg-gradient-to-tr from-violet-400 to-red-500">
+<section id="search" class="flex flex-col justify-center relative bg-gradient-to-tr from-violet-400 to-red-500">
   {#if stageIndex !== 0}
     <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"
@@ -318,7 +325,7 @@
     </div>
   {/if}
 
-  <div class="w-full pt-8 pb-5 px-[5%] mt-12 h-full overflow-y-scroll">
+  <div class="w-full pt-8 pb-5 px-[5%] mt-12">
     {#if loading}
       <div class="w-full text-center mt-6">
         <i class="text-4xl fa fa-circle-notch fa-spin"></i>
