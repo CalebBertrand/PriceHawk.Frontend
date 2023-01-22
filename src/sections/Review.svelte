@@ -178,7 +178,9 @@
         Confirm
       </Button>
     </div>
-    <div class="md:w-1/2 py-8">
+    <div class="md:w-1/2 py-4">
+      <div id="amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c" class="bg-slate-200 p-2 rounded-lg"></div>
+      <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c"></script>
     </div>
   </div>
 

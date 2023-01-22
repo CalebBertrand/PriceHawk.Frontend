@@ -109,7 +109,6 @@
   }
 
   .input-block {
-    min-height: 35vh;
     display: flex;
     flex-direction: column-reverse;
     align-items: stretch;
@@ -148,7 +147,7 @@
     height: 25px;
     border-left: solid 25px transparent;
     border-right: solid 25px transparent;
-    border-bottom: solid 25px rgb(30 41 59);
+    border-bottom: solid 25px rgb(15, 23, 42);
     position: absolute;
     top: -25px;
     left: calc(50% - 25px);
@@ -331,15 +330,15 @@
         <i class="text-4xl fa fa-circle-notch fa-spin"></i>
       </div>
     {:else if !$previewResults}
-      <div class="bg-slate-800 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+      <div class="bg-slate-900 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
         in:fly={{ y: -25, duration: 500 }}>
-        <div class="arrow-up border-slate-800"></div>
+        <div class="arrow-up border-slate-900"></div>
         <span class="text-slate-300 text-lg">Type a search, set a price and select at least one marketplace to see a preview</span>
       </div>
     {:else if !$previewResults.length}
-      <div class="bg-slate-800 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
+      <div class="bg-slate-900 px-4 py-1 mt-6 rounded-lg shadow-lg w-fit mx-auto relative"
       in:fly={{ y: -25, duration: 500 }}>
-        <div class="arrow-up border-slate-800"></div>
+        <div class="arrow-up border-slate-900"></div>
         <span class="text-slate-300 text-lg">Your search or price threshold may be too narrow</span>
       </div>
     {:else}
