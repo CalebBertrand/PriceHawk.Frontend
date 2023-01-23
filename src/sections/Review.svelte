@@ -135,7 +135,7 @@
     </h5>
 
     <Header text="Overview"></Header>
-    <div class="h-1 w-3/4 bg-red-500 my-5"></div>
+    <div class="h-1 w-3/4 bg-gradient-to-tr from-violet-500 to-red-500 my-5"></div>
   </div>
   <div class="flex flex-col md:flex-row w-full">
     <div class="md:w-1/2 py-4 pr-4">
