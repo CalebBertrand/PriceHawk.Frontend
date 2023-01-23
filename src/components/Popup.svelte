@@ -7,7 +7,7 @@
   export let style: 'red' | 'black' = 'red';
 
   const styles = {
-    red: 'text-slate-200 from-violet-400 to-red-500',
+    red: 'text-slate-200 from-violet-500 to-red-500',
     black: 'text-slate-200 from-slate-800 to-slate-600'
   }
 

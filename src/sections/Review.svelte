@@ -114,6 +114,13 @@
   ); 
 </script>
 
+<style>
+  .ad-block {
+    min-height: 18rem;
+    height: 100%;
+  }
+</style>
+
 <section id="review" class="min-h-screen text-slate-200 bg-gradient-to-tr from-black to-slate-700">
   <div class="pb-3">
     <h5 class=" text-slate-200 float-right rounded my-3 ml-3 cursor-pointer w-auto text-shadow text-sm md:text-lg"
@@ -126,7 +133,7 @@
     <div class="h-1 w-3/4 bg-red-500 my-5"></div>
   </div>
   <div class="flex flex-col md:flex-row w-full">
-    <div class="md:w-3/4 py-4">
+    <div class="md:w-3/4 py-4 pr-4">
       <div class="md:max-w-2/3 mb-6">
         {#if !!$validationErrors.length}
           <ValidationErrors errors={$validationErrors}></ValidationErrors>
@@ -178,14 +185,14 @@
         Confirm
       </Button>
     </div>
-    <div class="md:w-1/2 py-4">
+    <div class="md:w-1/2 py-4 ad-block">
       <div id="amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c" class="bg-slate-200 p-2 rounded-lg"></div>
       <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c"></script>
     </div>
   </div>
 
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."
-    text='At least twice a day, PriceHawk searches for products that match the parameters you set here. 
+    text='PriceHawk looks for products that match your search. 
       When a match is first found, as well as when the price drops, an email is sent to you. 
       Emails can be cancelled by clicking "Finish Watch" in any of the emails or by waiting until the end of the period you set here.'
     bind:displayed={howItWorksPopup}>

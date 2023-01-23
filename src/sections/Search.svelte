@@ -154,7 +154,7 @@
   }
 </style>
 
-<section id="search" class="flex flex-col justify-center relative bg-gradient-to-tr from-violet-400 to-red-500">
+<section id="search" class="flex flex-col justify-center relative bg-gradient-to-tr from-violet-500 to-red-500">
   {#if stageIndex !== 0}
     <div class="absolute top-6 left-6" transition:fade={{ duration: 200 }}>
       <Button color="black"

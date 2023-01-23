@@ -15,6 +15,7 @@
     background-image: url('/hero_dark.jpg');
     background-size: cover;
     background-attachment: scroll;
+    position: relative;
 
     .bottom-shadow {
       position: absolute;
@@ -23,6 +24,14 @@
       right: 0;
       height: 15vh;
       background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.75));
+    }
+
+    .ad-strip {
+      position: absolute;
+      bottom: 0;
+      left: 15%;
+      width: 70%;
+      height: 6rem;
     }
   }
 
@@ -52,4 +61,7 @@
   </div>
   <div class="bottom-shadow"></div>
   <div class="bg-black text-slate-300 absolute bottom-0 right-0 p-3">Image By Freepik</div>
+
+  <div id="amzn-assoc-ad-0163a5ee-fdb9-470c-8eb9-0307b82077e2" class="ad-strip rounded-t-md"></div>
+  <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=0163a5ee-fdb9-470c-8eb9-0307b82077e2"></script>
 </section>
