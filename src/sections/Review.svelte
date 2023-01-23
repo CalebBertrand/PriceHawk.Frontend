@@ -111,7 +111,12 @@
       else if (!/^\S+@\S+\.\S+$/.test(contact)) errors.push('invalid email');
       return errors;
     })
-  ); 
+  );
+
+  function displayAd(): void {
+    document.getElementById('amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c')
+      .style.setProperty('display', 'inherit');
+  }
 </script>
 
 <style>
@@ -133,7 +138,7 @@
     <div class="h-1 w-3/4 bg-red-500 my-5"></div>
   </div>
   <div class="flex flex-col md:flex-row w-full">
-    <div class="md:w-3/4 py-4 pr-4">
+    <div class="md:w-1/2 py-4 pr-4">
       <div class="md:max-w-2/3 mb-6">
         {#if !!$validationErrors.length}
           <ValidationErrors errors={$validationErrors}></ValidationErrors>
@@ -187,7 +192,8 @@
     </div>
     <div class="md:w-1/2 py-4 ad-block">
       <div id="amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c" class="bg-slate-200 p-2 rounded-lg"></div>
-      <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c"></script>
+      <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c"
+        on:load={displayAd}></script>
     </div>
   </div>
 
