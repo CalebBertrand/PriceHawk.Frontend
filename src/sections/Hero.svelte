@@ -67,7 +67,7 @@
   <div class="bottom-shadow"></div>
   <div class="bg-black text-slate-300 absolute bottom-0 right-0 p-3">Image By Freepik</div>
 
-  <div id="amzn-assoc-ad-0163a5ee-fdb9-470c-8eb9-0307b82077e2" class="ad-strip rounded-t-md bg-white hidden"></div>
+  <!-- <div id="amzn-assoc-ad-0163a5ee-fdb9-470c-8eb9-0307b82077e2" class="ad-strip rounded-t-md bg-white hidden"></div>
   <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=0163a5ee-fdb9-470c-8eb9-0307b82077e2" 
-    on:load={displayAd}></script>
+    on:load={displayAd}></script> -->
 </section>
