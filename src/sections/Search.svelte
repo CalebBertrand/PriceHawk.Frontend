@@ -198,7 +198,7 @@
 
       {#if showAdvancedOptions}
         <div class="mx-auto w-4/5 w-md-3/4 order-1">
-          <h4 class="text-lg mt-2 text-left tracking-wide font-bold">Must Include:</h4>
+          <h4 class="text-lg mt-2 text-left text-slate-200 tracking-wide font-bold">Must Include:</h4>
           {#if $responses.mustInclude.length < 3}
             <div class="float-left bg-slate-800 text-slate-200 rounded-md w-52 h-11">
               <Input type='text'
