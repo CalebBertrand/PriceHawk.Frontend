@@ -4,7 +4,7 @@
   import Header from '../components/Header.svelte';
   import Input from '../components/Input.svelte';
   import { Responses, responses } from '../stores';
-  import { clamp, clone, isEqual, set } from 'lodash-es';
+  import { clamp, clone, isEqual, set, range } from 'lodash-es';
   import MarketPlaceList from '../components/MarketPlaceList.svelte';
   import { fromFetch } from 'rxjs/fetch';
   import { switchMap, filter, tap, debounceTime, map, withLatestFrom, distinctUntilChanged, catchError } from 'rxjs/operators';
@@ -222,7 +222,7 @@
       {/if}
     </div>
   {/if}
-
+ 
   <!-- Price -->
   {#if stageIndex === 1}
     <div class="text-center w-full input-block" in:fly={{ y: -25, duration: 500 }}>
@@ -358,6 +358,17 @@
           <a href={result.url} target="_blank" rel="noreferrer">
             {#if result.imageUrl}
               <img class="mx-auto mb-2 rounded" src={result.imageUrl} alt={result.name}>
+            {/if}
+            {#if result.rating}
+              <div class="my-1">
+                <span class="mr-2">{result.rating.toFixed(1)}</span>
+                {#each range(Math.floor(result.rating)) as _}
+                  <i class="fa fa-star text-yellow-400"></i>
+                {/each}
+                {#if result.rating % 1 >= 0.5}
+                <i class="fa fa-star-half text-yellow-400"></i>
+                {/if}
+              </div>
             {/if}
             <h3 class="text-lg text-slate-400">{result.name}</h3>
             <h2 class="text-3xl my-2">${result.price ?? 0}</h2>

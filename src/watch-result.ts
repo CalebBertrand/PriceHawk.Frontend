@@ -7,6 +7,7 @@ export type WatchResult = {
     marketplaceId: MarketPlaceIds;
     description?: string;
     imageUrl?: string;
+    rating?: number;
 }
 
 export type QueryResults = {
