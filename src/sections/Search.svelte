@@ -121,11 +121,17 @@
   }
 
   .preview-card {
-    width: 46%;
-    margin: 0 2% 5vh 2%;
+    width: 90%;
+    margin: 0 5% 5vh 5%;
     height: 45vh;
   }
-  @media (min-width: 750px)  {
+  @media (min-width: 550px)  {
+    .preview-card {
+      width: 46%;
+      margin: 0 2% 5vh 2%;
+    }
+  }
+  @media (min-width: 850px)  {
     .preview-card {
       width: 30%;
       margin: 0 1.55% 5vh 1.55%;
