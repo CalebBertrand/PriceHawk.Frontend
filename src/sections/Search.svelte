@@ -128,7 +128,6 @@
   @media (min-width: 750px)  {
     .preview-card {
       width: 30%;
-      height: 40vh;
       margin: 0 1.55% 5vh 1.55%;
     }
   }
