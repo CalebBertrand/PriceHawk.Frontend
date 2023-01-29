@@ -112,19 +112,7 @@
       return errors;
     })
   );
-
-  function displayAd(): void {
-    document.getElementById('amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c')
-      .style.setProperty('display', 'inherit');
-  }
 </script>
-
-<style>
-  .ad-block {
-    min-height: 18rem;
-    height: 100%;
-  }
-</style>
 
 <section id="review" class="min-h-screen text-slate-200 bg-gradient-to-tr from-black to-slate-700">
   <div class="pb-3">
@@ -190,11 +178,7 @@
         Confirm
       </Button>
     </div>
-    <div class="md:w-1/2 py-4 ad-block">
-      <div id="amzn-assoc-ad-2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c" class="bg-slate-200 p-2 rounded-lg"></div>
-      <script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=2a4bd0ab-e5e9-45f4-8c7e-3dc18c9cd77c"
-        on:load={displayAd}></script>
-    </div>
+    <div class="md:w-1/2"></div>
   </div>
 
   <Popup header="PriceHawk Takes the Hassle Out of Finding Great Prices."

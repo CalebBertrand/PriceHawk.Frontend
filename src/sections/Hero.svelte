@@ -52,7 +52,7 @@
     <div class="bg-black bg-opacity-70 rounded-2xl p-5">
       <Header text="Get Price Updates On the Products You Love"></Header>
       <div class="h-1 w-3/4 bg-gradient-to-tr from-violet-500 to-red-500 my-5"></div>
-      <p class="my-5">
+      <p class="my-5 text-xl">
         PriceHawk sends you email notifications when products at supported stores drop below your specified price.
       </p>
       <Button color="red" applyClass="rounded" callBack={scrollToStart} size='lg'>Get Started</Button>
