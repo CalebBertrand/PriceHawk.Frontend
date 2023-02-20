@@ -53,12 +53,10 @@
       marketplaces.length > 0
     ),
     distinctUntilChanged((r1, r2) => {
-      console.log(r1, r2);
       return isEqual(getPreviewParams(r1), getPreviewParams(r2));
     }),
     tap(() => {
       loading = true;
-      console.log('loading...');
     }),
     switchMap(({ queryString, priceWatch, marketplaces, mustInclude }) => {
       const request = new Request(resolvedEnv['PreviewEndpoint'], {
