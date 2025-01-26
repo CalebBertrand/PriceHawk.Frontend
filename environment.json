@@ -6,9 +6,9 @@
         "PreviewEndpoint": "http://localhost:7071/api/Preview"
     },
     "Production": {
-        "VerifyContactEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/VerifyContact",
-        "RequestsEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/Requests",
-        "FinishWatchEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/FinishWatch",
-        "PreviewEndpoint": "https://pricehawk-apim.azure-api.net/PriceHawk/Preview"
+        "VerifyContactEndpoint": "https://pricehawk.azurewebsites.net/api/VerifyContact",
+        "RequestsEndpoint": "https://pricehawk.azurewebsites.net/api/Requests",
+        "FinishWatchEndpoint": "https://pricehawk.azurewebsites.net/api/FinishWatch",
+        "PreviewEndpoint": "https://pricehawk.azurewebsites.net/api/Preview"
     }
 }
